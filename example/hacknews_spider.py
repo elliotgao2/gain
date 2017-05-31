@@ -1,8 +1,8 @@
-from gain import Css, Item, Parser, Regex, Spider, Xpath
+from gain import Css, Item, Parser, Spider, Xpath
 
 
 class Post(Item):
-    id = Regex('')
+    id = Css('')
     title = Css('')
     username = Css('')
     url = Css('')
