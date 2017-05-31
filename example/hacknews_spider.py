@@ -2,11 +2,9 @@ from gain import Css, Item, Parser, Spider, Xpath
 
 
 class Post(Item):
-    id = Css('')
-    title = Css('')
-    username = Css('')
-    url = Css('')
-    points = Xpath('')
+    title = Css('.title a')
+    url = Css('.title a', 'href')
+    points = Css('.subtext .score')
 
     def save(self):
         print(self.results)
@@ -21,11 +19,10 @@ class User(Item):
 
 
 class MySpider(Spider):
-    start_url = ''
-    follow_rules = ['',
-                    '']
-    parsers = [Parser('', Post),
-               Parser('', User)]
+    start_url = 'https://news.ycombinator.com/'
+    follow_rules = ['/news?p=\d+', ]
+    parsers = [Parser('/item?id=\d+', Post),
+               Parser('/user?id=\w+', User)]
 
 
 MySpider.run()
