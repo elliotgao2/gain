@@ -1,4 +1,7 @@
+import asyncio
 import re
+
+import aiohttp
 
 
 class Spider:
@@ -27,3 +30,15 @@ class Spider:
             for parser in cls.parsers:
                 parser.parse_urls(html)
             cls.following_urls.remove(url)
+
+        async def fetch(host):
+            async with aiohttp.ClientSession(loop=loop) as session:
+                async with session.get(host) as response:
+                    print('{}'.format(response.status))
+                    return await response.text()
+
+        url = 'http://httpbin.org/ip'
+        loop = asyncio.get_event_loop()
+        tasks = [fetch(url) for i in range(20)]
+        loop.run_until_complete(asyncio.wait(tasks))
+        loop.close()
