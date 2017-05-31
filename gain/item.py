@@ -3,7 +3,6 @@ from .selector import Selector
 
 class ItemType(type):
     def __new__(mcs, name, bases, namespace):
-        """"""
         selectors = {}
         for name, value in namespace.items():
             if isinstance(value, Selector):
@@ -15,12 +14,10 @@ class ItemType(type):
 
 
 class Item(metaclass=ItemType):
-    """"""
-
     def __init__(self, html):
         self.results = {}
         for name, selector in self.selectors.items():
-            self.results[name] = selector.parse(html)
+            self.results[name] = selector.parse_detail(html)
         self.save()
 
     def __getattr__(self, item):

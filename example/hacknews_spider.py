@@ -13,7 +13,6 @@ class Post(Item):
 
 
 class User(Item):
-    id = Regex('\d+')
     username = Css('.username')
     karma = Xpath('//[@class=karma]')
 
@@ -23,8 +22,8 @@ class User(Item):
 
 class MySpider(Spider):
     start_url = ''
-    follow_urls = ['',
-                   '']
+    follow_rules = ['',
+                    '']
     parsers = [Parser('', Post),
                Parser('', User)]
 
