@@ -22,8 +22,8 @@ class Item(metaclass=ItemType):
 
     def __getattr__(self, item):
         if item not in self.results:
-            raise AttributeError()
+            raise AttributeError
         return self.results[item]
 
     def save(self):
-        NotImplementedError('save() should be implemented')
+        raise NotImplementedError

@@ -15,6 +15,7 @@ setup(
         'Programming Language :: Python :: 3.6',
     ],
     install_requires=[
+        'pybloomfiltermmap',
         'pyquery',
     ],
     license='GNU GPL 3',

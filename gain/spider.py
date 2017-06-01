@@ -1,44 +1,38 @@
 import asyncio
-import re
 
-import aiohttp
+import uvloop
+from aiohttp import ClientSession
+
+from gain.request import fetch
+
+asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class Spider:
     start_url = ''
     parsers = []
-    follow_rules = []
-
-    following_urls = []
-    followed_urls = []
 
     @classmethod
-    def parse_urls(cls, html):
-        for rule in cls.follow_rules:
-            urls = re.findall(rule, html)
-            for url in urls:
-                if url not in cls.followed_urls:
-                    cls.following_urls.append(urls)
-                    cls.followed_urls.append(urls)
-
-    @classmethod
-    def run(cls):
-        while len(cls.following_urls) != 0:
-            url = cls.following_urls.pop()
-            html = url
-            cls.parse_urls(html)
-            for parser in cls.parsers:
+    def parse(cls, html):
+        for parser in cls.parsers:
+            if parser.item is None:
                 parser.parse_urls(html)
-            cls.following_urls.remove(url)
+            else:
+                parser.parse_item(html)
 
-        async def fetch(host):
-            async with aiohttp.ClientSession(loop=loop) as session:
-                async with session.get(host) as response:
-                    print('{}'.format(response.status))
-                    return await response.text()
+    @classmethod
+    async def run(cls):
+        tasks = []
+        async with ClientSession() as session:
+            html = await fetch(cls.start_url, session)
+            cls.parse(html)
+            for parser in cls.parsers:
+                tasks.append(asyncio.ensure_future(parser.task(cls, session)))
+            await asyncio.gather(*tasks)
 
-        url = 'http://httpbin.org/ip'
+    @classmethod
+    def start(cls):
+        print('starting...')
         loop = asyncio.get_event_loop()
-        tasks = [fetch(url) for i in range(20)]
-        loop.run_until_complete(asyncio.wait(tasks))
-        loop.close()
+        future = asyncio.ensure_future(cls.run())
+        loop.run_until_complete(future)

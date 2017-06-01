@@ -15,7 +15,7 @@ class Selector:
         return '{}({})'.format(self.__class__.__name__, self.rule)
 
     def parse_detail(self, html):
-        NotImplementedError('parse() should be implemented')
+        raise NotImplementedError
 
 
 class Css(Selector):
