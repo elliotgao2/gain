@@ -18,7 +18,6 @@ class Item(metaclass=ItemType):
         self.results = {}
         for name, selector in self.selectors.items():
             self.results[name] = selector.parse_detail(html)
-        self.save()
 
     def __getattr__(self, item):
         if item not in self.results:

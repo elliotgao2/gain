@@ -1,23 +1,21 @@
-import asyncio
 import re
 from pybloomfilter import BloomFilter
 
-from gain.request import fetch
+import requests
 
 
 class Parser:
     def __init__(self, rule, item=None):
         self.rule = rule
         self.item = item
-        self.parsing_urls = asyncio.Queue()
+        self.parsing_urls = []
         self.parsed_urls = BloomFilter(10000000, 0.01)
 
     def add(self, urls):
-        print(urls)
-        url = '{}{}'.format('https://news.ycombinator.com/', urls)
-        if bytes(url) not in self.parsed_urls:
-            self.parsed_urls.append(bytes(url))
-            self.parsing_urls.put_nowait(url)
+        url = '{}'.format(urls)
+        if url.encode('utf-8') not in self.parsed_urls:
+            self.parsed_urls.add(url.encode('utf-8'))
+            self.parsing_urls.append(url)
 
     def parse_urls(self, html):
         urls = re.findall(self.rule, html)
@@ -29,10 +27,9 @@ class Parser:
         item.save()
         return item
 
-    async def task(self, spider, session):
-        while not self.parsing_urls.empty():
-            if len(self.parsed_urls) > 10:
-                break
-            url = await self.parsing_urls.get()
-            html = await fetch(url, session)
-            await spider.parse(html)
+    def task(self, spider):
+        while len(self.parsing_urls) > 0:
+            url = self.parsing_urls.pop()
+            print(url)
+            html = requests.get(url).text
+            spider.parse(html)

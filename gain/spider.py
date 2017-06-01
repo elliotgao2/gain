@@ -1,9 +1,7 @@
 import asyncio
 
+import requests
 import uvloop
-from aiohttp import ClientSession
-
-from gain.request import fetch
 
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -15,20 +13,16 @@ class Spider:
     @classmethod
     def parse(cls, html):
         for parser in cls.parsers:
-            if parser.item is None:
-                parser.parse_urls(html)
-            else:
+            if parser.item is not None:
                 parser.parse_item(html)
+            parser.parse_urls(html)
 
     @classmethod
-    async def run(cls):
-        tasks = []
-        async with ClientSession() as session:
-            html = await fetch(cls.start_url, session)
-            cls.parse(html)
-            for parser in cls.parsers:
-                tasks.append(asyncio.ensure_future(parser.task(cls, session)))
-            await asyncio.gather(*tasks)
+    def run(cls):
+        html = requests.get(cls.start_url).text
+        cls.parse(html)
+        for parser in cls.parsers:
+            parser.task(cls)
 
     @classmethod
     def start(cls):
