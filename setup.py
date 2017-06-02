@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="gain",
-    version="0.1.0",
+    version="0.1.1",
     description="Web crawling framework for everyone.",
     author="Gaojiuli",
     author_email="gaojiuli@gmail.com",
@@ -15,6 +15,7 @@ setup(
         'Programming Language :: Python :: 3.6',
     ],
     install_requires=[
+        'uvloop',
         'pybloomfiltermmap',
         'pyquery',
     ],

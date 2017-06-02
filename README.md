@@ -12,6 +12,14 @@ Every could write their own web crawler easily with gain framework. Gain framewo
 
 - Python3.5+
 
+## Based on
+
+- asyncio
+- uvloop
+- aiohttp
+- pybloomfiltermmap
+- pyquery
+
 ## Installation
 
 `pip install gain`
@@ -45,6 +53,10 @@ run `python spider.py`
 
 ![](img/sample.png)
 
-## example
+## Example
 
 the examples are in the `/example/` directory.
+
+## Contribution
+
+Just pull request or open issue.
