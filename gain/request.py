@@ -1,15 +1,15 @@
 import asyncio
 
+import aiohttp
 import uvloop
 
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-semaphore = asyncio.Semaphore(10)
 
 
-async def fetch(url, session):
-    print('Fetching {}'.format(url))
-
+async def fetch(url, semaphore):
     with (await semaphore):
-        async with session.get(url) as response:
-            data = await response.text()
-            return data
+        print(semaphore)
+        with aiohttp.ClientSession() as session:
+            async with session.get(url) as response:
+                data = await response.text()
+                return data

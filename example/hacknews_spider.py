@@ -9,6 +9,7 @@ class Post(Item):
 
 
 class MySpider(Spider):
+    base_url = 'https://movie.douban.com/'
     start_url = 'https://movie.douban.com/'
     parsers = [Parser('/news?p=\d+'),
                Parser('https://movie.douban.com/subject/\d+/', Post)]

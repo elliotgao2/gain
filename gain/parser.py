@@ -1,7 +1,8 @@
+import asyncio
 import re
 from pybloomfilter import BloomFilter
 
-import requests
+from gain.request import fetch
 
 
 class Parser:
@@ -9,12 +10,13 @@ class Parser:
         self.rule = rule
         self.item = item
         self.parsing_urls = []
-        self.parsed_urls = BloomFilter(10000000, 0.01)
+        self.filter_urls = BloomFilter(10000000, 0.01)
+        self.done_urls = []
 
     def add(self, urls):
         url = '{}'.format(urls)
-        if url.encode('utf-8') not in self.parsed_urls:
-            self.parsed_urls.add(url.encode('utf-8'))
+        if url.encode('utf-8') not in self.filter_urls:
+            self.filter_urls.add(url.encode('utf-8'))
             self.parsing_urls.append(url)
 
     def parse_urls(self, html):
@@ -27,9 +29,19 @@ class Parser:
         item.save()
         return item
 
-    def task(self, spider):
-        while len(self.parsing_urls) > 0:
+    async def execute_url(self, spider, semaphore, url):
+
+        html = await fetch(url, semaphore)
+        print('({}/{}) {}'.format(len(self.done_urls), len(self.parsing_urls), url))
+
+        if self.item is not None:
+            self.parse_item(html)
+        spider.parse(html)
+        self.done_urls.append(url)
+
+    async def task(self, spider, semaphore):
+        while True:
+            if len(self.parsing_urls) <= 0:
+                break
             url = self.parsing_urls.pop()
-            print(url)
-            html = requests.get(url).text
-            spider.parse(html)
+            asyncio.ensure_future(self.execute_url(spider, semaphore, url))
