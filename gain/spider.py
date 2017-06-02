@@ -1,7 +1,11 @@
 import asyncio
+from datetime import datetime
 
-import requests
+import aiohttp
 import uvloop
+
+from gain.request import fetch
+from .log import logger
 
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -9,6 +13,16 @@ asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 class Spider:
     start_url = ''
     parsers = []
+    urls_count = 0
+    frequency = 5
+
+    @classmethod
+    def is_running(cls):
+        is_running = False
+        for parser in cls.parsers:
+            if len(parser.pre_parse_urls) > 0 or len(parser.parsing_urls) > 0:
+                is_running = True
+        return is_running
 
     @classmethod
     def parse(cls, html):
@@ -17,16 +31,32 @@ class Spider:
 
     @classmethod
     def run(cls):
-        cls.init_parse()
-        print('starting...')
-
+        logger.info('Spider started!')
+        start_time = datetime.now()
+        semaphore = asyncio.Semaphore(cls.frequency)
         loop = asyncio.get_event_loop()
-        semaphore = asyncio.Semaphore(5)
 
         tasks = asyncio.wait([parser.task(cls, semaphore) for parser in cls.parsers])
-        loop.run_until_complete(tasks)
+
+        try:
+            loop.run_until_complete(cls.init_parse(semaphore))
+            loop.run_until_complete(tasks)
+        except KeyboardInterrupt:
+            for task in asyncio.Task.all_tasks():
+                task.cancel()
+            loop.run_forever()
+        finally:
+            end_time = datetime.now()
+            for parser in cls.parsers:
+                if parser.item is not None:
+                    logger.info('Item "{}": {}'.format(parser.item._item_name, parser.item._item_count))
+            logger.info('Requests count: {}'.format(cls.urls_count))
+            logger.info('Time usage: {}'.format(end_time - start_time))
+            logger.info('Spider finished!')
+            loop.close()
 
     @classmethod
-    def init_parse(cls):
-        html = requests.get(cls.start_url).text
-        cls.parse(html)
+    async def init_parse(cls, semaphore):
+        with aiohttp.ClientSession() as session:
+            html = await fetch(cls.start_url, session, semaphore)
+            cls.parse(html)

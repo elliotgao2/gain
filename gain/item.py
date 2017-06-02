@@ -4,6 +4,8 @@ from .selector import Selector
 class ItemType(type):
     def __new__(mcs, name, bases, namespace):
         selectors = {}
+        namespace['_item_name'] = name
+        namespace['_item_count'] = 0
         for name, value in namespace.items():
             if isinstance(value, Selector):
                 selectors[name] = value
@@ -24,5 +26,5 @@ class Item(metaclass=ItemType):
             raise AttributeError
         return self.results[item]
 
-    def save(self):
+    async def save(self):
         raise NotImplementedError

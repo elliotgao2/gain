@@ -2,7 +2,10 @@ import asyncio
 import re
 from pybloomfilter import BloomFilter
 
+import aiohttp
+
 from gain.request import fetch
+from .log import logger
 
 
 class Parser:
@@ -10,6 +13,7 @@ class Parser:
         self.rule = rule
         self.item = item
         self.parsing_urls = []
+        self.pre_parse_urls = []
         self.filter_urls = BloomFilter(10000000, 0.01)
         self.done_urls = []
 
@@ -17,31 +21,38 @@ class Parser:
         url = '{}'.format(urls)
         if url.encode('utf-8') not in self.filter_urls:
             self.filter_urls.add(url.encode('utf-8'))
-            self.parsing_urls.append(url)
+            self.pre_parse_urls.append(url)
 
     def parse_urls(self, html):
         urls = re.findall(self.rule, html)
         for url in urls:
             self.add(url)
 
-    def parse_item(self, html):
+    async def parse_item(self, html):
+
         item = self.item(html)
-        item.save()
+        await item.save()
+        self.item._item_count += 1
         return item
 
-    async def execute_url(self, spider, semaphore, url):
-
-        html = await fetch(url, semaphore)
-        print('({}/{}) {}'.format(len(self.done_urls), len(self.parsing_urls), url))
-
-        if self.item is not None:
-            self.parse_item(html)
-        spider.parse(html)
+    async def execute_url(self, spider, session, semaphore, url):
+        html = await fetch(url, session, semaphore)
+        spider.urls_count += 1
+        self.parsing_urls.remove(url)
         self.done_urls.append(url)
+        if self.item is not None:
+            await self.parse_item(html)
+            logger.info('Parsed({}/{}): {}'.format(len(self.done_urls), len(self.filter_urls), url))
+        else:
+            spider.parse(html)
+            logger.info('Followed({}/{}): {}'.format(len(self.done_urls), len(self.filter_urls), url))
 
     async def task(self, spider, semaphore):
-        while True:
-            if len(self.parsing_urls) <= 0:
-                break
-            url = self.parsing_urls.pop()
-            asyncio.ensure_future(self.execute_url(spider, semaphore, url))
+        with aiohttp.ClientSession() as session:
+            while spider.is_running():
+                if len(self.pre_parse_urls) == 0:
+                    await asyncio.sleep(0.5)
+                    continue
+                url = self.pre_parse_urls.pop()
+                self.parsing_urls.append(url)
+                asyncio.ensure_future(self.execute_url(spider, session, semaphore, url))
