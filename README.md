@@ -3,6 +3,11 @@
 Web crawling framework for everyone. Written with asyncio, uvloop and aiohttp.
 Every could write their own web crawler easily with gain framework. Gain framework provide a pretty simple api.
 
+## Road map
+
+- [x] Basic spider 
+- [] Custom header 
+
 ## Requirements
 
 - Python3.5+
