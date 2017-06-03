@@ -6,7 +6,8 @@ Every could write their own web crawler easily with gain framework. Gain framewo
 ## Road map
 
 - [x] Basic spider 
-- [] Custom header 
+- [ ] Custom header
+- [ ] Documentation 
 
 ## Requirements
 

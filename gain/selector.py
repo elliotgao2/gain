@@ -26,7 +26,7 @@ class Css(Selector):
                 return d(self.rule)[0].text
             except IndexError:
                 return None
-        return d(self.rule).attr(self.attr, None)
+        return d(self.rule)[0].attr(self.attr, None)
 
 
 class Xpath(Selector):

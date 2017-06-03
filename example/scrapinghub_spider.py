@@ -12,6 +12,7 @@ class Post(Item):
 
 class MySpider(Spider):
     start_url = 'https://blog.scrapinghub.com/'
+    frequency = 5
     parsers = [Parser('https://blog.scrapinghub.com/page/\d+/'),
                Parser('https://blog.scrapinghub.com/\d{4}/\d{2}/\d{2}/[a-z0-9\-]+/', Post)]
 

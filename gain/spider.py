@@ -2,12 +2,16 @@ import asyncio
 from datetime import datetime
 
 import aiohttp
-import uvloop
 
 from gain.request import fetch
 from .log import logger
 
-asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+try:
+    import uvloop
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+except ImportError:
+    pass
 
 
 class Spider:

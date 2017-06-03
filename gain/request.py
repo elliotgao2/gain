@@ -1,8 +1,10 @@
 import asyncio
 
-import uvloop
-
-asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+try:
+    import uvloop
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+except ImportError:
+    pass
 
 
 async def fetch(url, session, semaphore):

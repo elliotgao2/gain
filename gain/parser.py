@@ -37,6 +37,7 @@ class Parser:
 
     async def execute_url(self, spider, session, semaphore, url):
         html = await fetch(url, session, semaphore)
+
         spider.urls_count += 1
         self.parsing_urls.remove(url)
         self.done_urls.append(url)
