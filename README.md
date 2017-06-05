@@ -13,17 +13,12 @@ Everyone could write their own web crawler easily with gain framework. Gain fram
 
 - Python3.5+
 
-## Based on
 
-- asyncio
-- uvloop
-- aiohttp
-- pybloomfiltermmap
-- pyquery
 
 ## Installation
 
 `pip install gain`
+`pip install uvloop` (Only linux)
 
 ## Usage
 
