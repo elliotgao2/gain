@@ -1,13 +1,13 @@
-from gain import Css, Item, Parser, Spider
+from gain import Css, Item, Parser, Regex, Spider
 
 
 class Post(Item):
     title = Css('.entry-title')
     content = Css('.entry-content')
+    regex_test = Regex('\d+')
 
     async def save(self):
-        with open('scrapinghub.txt', 'a+') as f:
-            f.writelines(self.results['title'] + '\n')
+        print(self.regex_test)
 
 
 class MySpider(Spider):

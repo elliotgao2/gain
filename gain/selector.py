@@ -1,5 +1,6 @@
-from lxml import etree
+import re
 
+from lxml import etree
 from pyquery import PyQuery as pq
 
 
@@ -36,5 +37,13 @@ class Xpath(Selector):
             if self.attr is None:
                 return d.xpath(self.rule)[0].text
             return d.xpath(self.rule)[0].get(self.attr, None)
+        except IndexError:
+            return None
+
+
+class Regex(Selector):
+    def parse_detail(self, html):
+        try:
+            return re.findall(self.rule, html)[0]
         except IndexError:
             return None

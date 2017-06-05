@@ -1,3 +1,4 @@
+from .log import logger
 from .selector import Selector
 
 
@@ -19,7 +20,11 @@ class Item(metaclass=ItemType):
     def __init__(self, html):
         self.results = {}
         for name, selector in self.selectors.items():
-            self.results[name] = selector.parse_detail(html)
+            value = selector.parse_detail(html)
+            if value is None:
+                logger.error('Selector "{}" for {} was wrong, please check again'.format(selector.rule, name))
+            else:
+                self.results[name] = value
 
     def __getattr__(self, item):
         if item not in self.results:
