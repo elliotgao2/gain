@@ -12,7 +12,7 @@ async def fetch(url, session, semaphore):
     with (await semaphore):
         try:
             async with session.get(url) as response:
-                if response.status == 200:
+                if response.status in [200, 201]:
                     data = await response.text()
                     return data
                 return None
