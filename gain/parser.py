@@ -29,7 +29,6 @@ class Parser:
             self.add(url)
 
     async def parse_item(self, html):
-
         item = self.item(html)
         await item.save()
         self.item._item_count += 1
@@ -38,6 +37,12 @@ class Parser:
     async def execute_url(self, spider, session, semaphore, url):
         html = await fetch(url, session, semaphore)
 
+        if html is None:
+            spider.error_urls.append(url)
+            self.pre_parse_urls.append(url)
+            return
+        if url in spider.error_urls:
+            spider.error_urls.remove(url)
         spider.urls_count += 1
         self.parsing_urls.remove(url)
         self.done_urls.append(url)

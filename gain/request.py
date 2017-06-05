@@ -2,6 +2,7 @@ import asyncio
 
 try:
     import uvloop
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 except ImportError:
     pass
@@ -9,6 +10,11 @@ except ImportError:
 
 async def fetch(url, session, semaphore):
     with (await semaphore):
-        async with session.get(url) as response:
-            data = await response.text()
-            return data
+        try:
+            async with session.get(url) as response:
+                if response.status == 200:
+                    data = await response.text()
+                    return data
+                return None
+        except:
+            return None

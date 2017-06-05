@@ -17,6 +17,7 @@ except ImportError:
 class Spider:
     start_url = ''
     parsers = []
+    error_urls = []
     urls_count = 0
     frequency = 5
 
@@ -55,6 +56,7 @@ class Spider:
                 if parser.item is not None:
                     logger.info('Item "{}": {}'.format(parser.item._item_name, parser.item._item_count))
             logger.info('Requests count: {}'.format(cls.urls_count))
+            logger.info('Error count: {}'.format(len(cls.error_urls)))
             logger.info('Time usage: {}'.format(end_time - start_time))
             logger.info('Spider finished!')
             loop.close()

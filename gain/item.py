@@ -1,5 +1,3 @@
-import re
-
 from .selector import Selector
 
 
