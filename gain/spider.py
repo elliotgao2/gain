@@ -19,7 +19,7 @@ class Spider:
     parsers = []
     error_urls = []
     urls_count = 0
-    frequency = 5
+    concurrency = 5
 
     @classmethod
     def is_running(cls):
@@ -38,7 +38,7 @@ class Spider:
     def run(cls):
         logger.info('Spider started!')
         start_time = datetime.now()
-        semaphore = asyncio.Semaphore(cls.frequency)
+        semaphore = asyncio.Semaphore(cls.concurrency)
         loop = asyncio.get_event_loop()
 
         tasks = asyncio.wait([parser.task(cls, semaphore) for parser in cls.parsers])
