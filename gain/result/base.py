@@ -36,7 +36,7 @@ class BaseResult:
     def __init__(self, url):
         self.url = url
         self._parse_url()
-        self.perpare()
+        self.prepare()
 
     def _parse_url(self):
         configs = _parse_rfc1738_args(self.url)
@@ -50,7 +50,7 @@ class BaseResult:
             self.port = None
         self.database = configs['database']
 
-    def perpare(self):
+    def prepare(self):
         """
         init config
         :return:

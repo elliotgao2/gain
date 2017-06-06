@@ -15,7 +15,7 @@ class FileResult(BaseResult):
             raise ValueError('scheme error')
         self.path = self.database
 
-    def perpare(self):
+    def prepare(self):
         """
         check file exist
         :return:

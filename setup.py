@@ -16,7 +16,6 @@ setup(
     ],
     install_requires=[
         'aiohttp',
-        'pybloomfiltermmap',
         'pyquery',
         'aiofiles',
     ],

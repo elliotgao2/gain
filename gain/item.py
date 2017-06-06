@@ -36,7 +36,7 @@ class Item(metaclass=ItemType):
         return self.results[item]
 
     async def save(self):
-        if hasattr(self, 'result_cls'):
-            await self.result_cls.save(self.results)
+        if hasattr(self, 'result'):
+            await self.result.save(self.results)
         else:
             raise NotImplementedError

@@ -10,12 +10,15 @@ class MySQLResult(BaseResult):
     def __init__(self, url):
         super().__init__(url)
 
-    def perpare(self):
+    def prepare(self):
         """
-        init mysql table
+        TODO: init mysql table
         :return:
         """
         pass
 
     async def save(self, results):
+        pass
+
+    def format_result(self, result):
         pass

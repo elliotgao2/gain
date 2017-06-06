@@ -5,7 +5,7 @@ from gain.result import FileResult
 class Post(Item):
     title = Css('.entry-title')
     content = Css('.entry-content')
-    result_cls = FileResult("file:///test.data")
+    result = FileResult("file:///test.data")
 
 
 class MySpider(Spider):
