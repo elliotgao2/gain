@@ -2,8 +2,8 @@ import asyncio
 from datetime import datetime
 
 import aiohttp
-
 from gain.request import fetch
+
 from .log import logger
 
 try:
@@ -20,6 +20,7 @@ class Spider:
     error_urls = []
     urls_count = 0
     concurrency = 5
+    headers = {}
 
     @classmethod
     def is_running(cls):
@@ -64,5 +65,5 @@ class Spider:
     @classmethod
     async def init_parse(cls, semaphore):
         with aiohttp.ClientSession() as session:
-            html = await fetch(cls.start_url, session, semaphore)
+            html = await fetch(cls.start_url, cls, session, semaphore)
             cls.parse(html)

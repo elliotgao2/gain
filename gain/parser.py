@@ -3,8 +3,8 @@ import re
 from pybloomfilter import BloomFilter
 
 import aiohttp
-
 from gain.request import fetch
+
 from .log import logger
 
 
@@ -34,8 +34,8 @@ class Parser:
         self.item._item_count += 1
         return item
 
-    async def execute_url(self, spider, session, semaphore, url):
-        html = await fetch(url, session, semaphore)
+    async def execute_url(self, url, spider, session, semaphore):
+        html = await fetch(url, spider, session, semaphore)
 
         if html is None:
             spider.error_urls.append(url)
@@ -61,4 +61,4 @@ class Parser:
                     continue
                 url = self.pre_parse_urls.pop()
                 self.parsing_urls.append(url)
-                asyncio.ensure_future(self.execute_url(spider, session, semaphore, url))
+                asyncio.ensure_future(self.execute_url(url, spider, session, semaphore))

@@ -7,28 +7,19 @@
 Web crawling framework for everyone. Written with asyncio, uvloop and aiohttp.
 Everyone could write their own web crawler easily with gain framework. Gain framework provide a pretty simple api.
 
-## Road map
-
-- [x] Basic spider 
-- [ ] Custom header
-- [ ] Documentation 
-
 ## Requirements
 
 - Python3.5+
-
-
 
 ## Installation
 
 `pip install gain`
 
-
 `pip install uvloop` (Only linux)
 
 ## Usage
 
-Write spider.py:
+1. Write spider.py:
 
 ```python
 from gain import Css, Item, Parser, Spider
@@ -45,6 +36,7 @@ class Post(Item):
 
 class MySpider(Spider):
     concurrency = 5
+    headers = {'User-Agent': 'Google Spider'}
     start_url = 'https://blog.scrapinghub.com/'
     parsers = [Parser('https://blog.scrapinghub.com/page/\d+/'),
                Parser('https://blog.scrapinghub.com/\d{4}/\d{2}/\d{2}/[a-z0-9\-]+/', Post)]
@@ -52,7 +44,9 @@ class MySpider(Spider):
 
 MySpider.run()
 ```
-run `python spider.py`
+2. Run `python spider.py`
+
+3. Result:
 
 ![](img/sample.png)
 
@@ -62,4 +56,5 @@ The examples are in the `/example/` directory.
 
 ## Contribution
 
-Pull request or open issue.
+- Pull request.
+- Open issue.

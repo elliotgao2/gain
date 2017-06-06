@@ -8,10 +8,14 @@ except ImportError:
     pass
 
 
-async def fetch(url, session, semaphore):
+async def fetch(url, spider, session, semaphore):
     with (await semaphore):
         try:
-            async with session.get(url) as response:
+            if callable(spider.headers):
+                headers = spider.headers()
+            else:
+                headers = spider.headers
+            async with session.get(url, headers=headers) as response:
                 if response.status in [200, 201]:
                     data = await response.text()
                     return data
