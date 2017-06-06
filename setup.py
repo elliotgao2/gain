@@ -17,7 +17,7 @@ setup(
     install_requires=[
         'aiohttp',
         'pybloomfiltermmap',
-        'pyquery',
+        'pyquery', 'aiofiles',
     ],
     license='GNU GPL 3',
     packages=find_packages(),

@@ -8,13 +8,13 @@ def test_parse():
         username = Xpath('//title')
         karma = Css('.karma')
 
-    parser = Parser(html, User)
+    parser = Parser('http://github.com', User)
 
-    user = parser.parse_item(html)
-    assert user.results == {
-        'username': 'tom',
-        'karma': '15'
-    }
+    user = parser.parse(html)
+    assert 'username' in user.results
+    assert 'karma' in user.results
+    assert user.username == 'tom'
+    assert user.karma == '15'
 
 
 def test_parse_urls():
@@ -27,4 +27,9 @@ def test_parse_urls():
 
     parser = Parser('item\?id=\d+', User)
     parser.parse_urls(html)
-    assert parser.pre_parse_urls.__len__() == 2
+    assert parser.parsing_urls.__len__() == 2
+    assert 'item?id=14447886' in parser.parsing_urls
+    assert 'item?id=14447885' in parser.parsing_urls
+
+    assert 'item?id=14447886' in parser.parsed_urls
+    assert 'item?id=14447885' in parser.parsed_urls
