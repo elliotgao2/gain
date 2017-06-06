@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="gain",
-    version="0.1.2",
+    version="0.1.3",
     description="Web crawling framework for everyone.",
     author="Gaojiuli",
     author_email="gaojiuli@gmail.com",
@@ -17,7 +17,8 @@ setup(
     install_requires=[
         'aiohttp',
         'pybloomfiltermmap',
-        'pyquery', 'aiofiles',
+        'pyquery',
+        'aiofiles',
     ],
     license='GNU GPL 3',
     packages=find_packages(),
