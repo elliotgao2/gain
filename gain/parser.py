@@ -1,6 +1,5 @@
 import asyncio
 import re
-from pybloomfilter import BloomFilter
 
 import aiohttp
 from gain.request import fetch
@@ -14,13 +13,13 @@ class Parser:
         self.item = item
         self.parsing_urls = []
         self.pre_parse_urls = []
-        self.filter_urls = BloomFilter(10000000, 0.01)
+        self.filter_urls = set()
         self.done_urls = []
 
     def add(self, urls):
         url = '{}'.format(urls)
-        if url.encode('utf-8') not in self.filter_urls:
-            self.filter_urls.add(url.encode('utf-8'))
+        if url not in self.filter_urls:
+            self.filter_urls.add(url)
             self.pre_parse_urls.append(url)
 
     def parse_urls(self, html):
