@@ -44,7 +44,7 @@ class Spider:
         loop = asyncio.get_event_loop()
 
         if cls.base_url is None:
-            cls.base_url = re.match('(http|https)://[\w\-_]+(\.[\w\-_]+)+', cls.start_url).group()
+            cls.base_url = re.match('(http|https)://[\w\-_]+(\.[\w\-_]+)+/', cls.start_url).group()
             logger.info('Base url: {}'.format(cls.base_url))
         try:
             semaphore = asyncio.Semaphore(cls.concurrency)

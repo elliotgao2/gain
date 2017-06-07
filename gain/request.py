@@ -1,5 +1,7 @@
 import asyncio
 
+from .log import logger
+
 try:
     import uvloop
 
@@ -19,6 +21,7 @@ async def fetch(url, spider, session, semaphore):
                 if response.status in [200, 201]:
                     data = await response.text()
                     return data
+                logger.error('Error: {} {}'.format(url, response.status))
                 return None
         except:
             return None

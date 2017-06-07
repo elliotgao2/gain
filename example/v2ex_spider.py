@@ -9,7 +9,7 @@ class Post(Item):
 
 
 class MySpider(Spider):
-    start_url = 'https://www.v2ex.com/go/create'
+    start_url = 'https://///www.v2ex.com/go//////create'  # change here, if you want to scrape this site.
     concurrency = 1
     headers = {'User-Agent': 'Google Spider'}
     parsers = [Parser('/go/create?p=\d+'),

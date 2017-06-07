@@ -1,5 +1,6 @@
 import asyncio
 import re
+from html import unescape
 
 import aiohttp
 
@@ -42,11 +43,13 @@ class Parser:
             spider.error_urls.append(url)
             self.pre_parse_urls.append(url)
             return None
+        html = unescape(html)
         if url in spider.error_urls:
             spider.error_urls.remove(url)
         spider.urls_count += 1
         self.parsing_urls.remove(url)
         self.done_urls.append(url)
+
         if self.item is not None:
             item = self.parse_item(html)
             await item.save()
