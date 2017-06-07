@@ -21,7 +21,7 @@ class Spider:
     parsers = []
     error_urls = []
     urls_count = 0
-    concurrency = 5
+    concurrency = 1
     headers = {}
 
     @classmethod
@@ -35,7 +35,7 @@ class Spider:
     @classmethod
     def parse(cls, html):
         for parser in cls.parsers:
-            parser.parse_urls(html)
+            parser.parse_urls(html, cls)
 
     @classmethod
     def run(cls):
@@ -44,7 +44,7 @@ class Spider:
         loop = asyncio.get_event_loop()
 
         if cls.base_url is None:
-            cls.base_url = re.match('(http|https)://[\w\-_]+(\.[\w\-_]+)+/?', cls.start_url).group()
+            cls.base_url = re.match('(http|https)://[\w\-_]+(\.[\w\-_]+)+', cls.start_url).group()
             logger.info('Base url: {}'.format(cls.base_url))
         try:
             semaphore = asyncio.Semaphore(cls.concurrency)

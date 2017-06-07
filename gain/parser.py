@@ -22,11 +22,13 @@ class Parser:
             self.filter_urls.add(url)
             self.pre_parse_urls.append(url)
 
-    def parse_urls(self, html):
+    def parse_urls(self, html, spider):
         if html is None:
             return
         urls = re.findall(self.rule, html)
         for url in urls:
+            if not re.match('(http|https)://', url):
+                url = spider.base_url + url
             self.add(url)
 
     def parse_item(self, html):

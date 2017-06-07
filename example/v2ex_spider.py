@@ -10,10 +10,10 @@ class Post(Item):
 
 class MySpider(Spider):
     start_url = 'https://www.v2ex.com/go/create'
-    concurrency = 2
+    concurrency = 1
     headers = {'User-Agent': 'Google Spider'}
-    parsers = [Parser('/go/create?p=\d+$'),
-               Parser('/t/\d+#reply\d+$', Post)]
+    parsers = [Parser('/go/create?p=\d+'),
+               Parser('/t/\d+#reply\d+', Post)]
 
 
 MySpider.run()
