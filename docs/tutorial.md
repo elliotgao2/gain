@@ -7,7 +7,7 @@ from gain.result import FileResult
 class Post(Item):
     title = Css('.entry-title')
     content = Css('.entry-content')
-    result_cls = FileResult("file:///scrapinghub.txt")
+    result = FileResult("file:///scrapinghub.txt")
 ```
 
 The name is "Post" 
