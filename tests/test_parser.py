@@ -1,3 +1,5 @@
+import sys
+sys.path.append('..')
 from gain import Css, Item, Parser, Xpath
 
 
