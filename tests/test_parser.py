@@ -26,5 +26,5 @@ def test_parse_urls():
         karma = Css('.karma')
 
     parser = Parser('item\?id=\d+', User)
-    parser.parse_urls(html)
+    parser.parse_urls(html, 'https://blog.scrapinghub.com')
     assert parser.pre_parse_urls.__len__() == 2

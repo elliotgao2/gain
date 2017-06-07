@@ -35,7 +35,7 @@ class Spider:
     @classmethod
     def parse(cls, html):
         for parser in cls.parsers:
-            parser.parse_urls(html, cls)
+            parser.parse_urls(html, cls.base_url)
 
     @classmethod
     def run(cls):
