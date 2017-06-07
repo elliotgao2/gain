@@ -28,6 +28,7 @@ class Parser:
             return
         urls = re.findall(self.rule, html)
         for url in urls:
+            url = unescape(url)
             if not re.match('(http|https)://', url):
                 url = base_url + url
             self.add(url)
@@ -43,7 +44,7 @@ class Parser:
             spider.error_urls.append(url)
             self.pre_parse_urls.append(url)
             return None
-        html = unescape(html)
+
         if url in spider.error_urls:
             spider.error_urls.remove(url)
         spider.urls_count += 1
