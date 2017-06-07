@@ -3,8 +3,8 @@ import re
 from datetime import datetime
 
 import aiohttp
-
 from gain.request import fetch
+
 from .log import logger
 
 try:
@@ -21,7 +21,7 @@ class Spider:
     parsers = []
     error_urls = []
     urls_count = 0
-    concurrency = 1
+    concurrency = 5
     headers = {}
 
     @classmethod
