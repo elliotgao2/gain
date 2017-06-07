@@ -20,7 +20,7 @@ def test_item_parse():
     html = '<title class="username">tom</title><div class="karma">15</div>'
     user = User(html)
 
-    assert 'username' in user.results
-    assert 'karma' in user.results
-    assert user.username == 'tom'
-    assert user.karma == '15'
+    assert user.results == {
+        'username': 'tom',
+        'karma': '15'
+    }

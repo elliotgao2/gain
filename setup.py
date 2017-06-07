@@ -17,7 +17,6 @@ setup(
     install_requires=[
         'aiohttp',
         'pyquery',
-        'aiofiles',
     ],
     license='GNU GPL 3',
     packages=find_packages(),
