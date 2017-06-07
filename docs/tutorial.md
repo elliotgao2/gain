@@ -2,19 +2,18 @@
 
 ```python
 from gain import Css, Item
+from gain.result import FileResult
 
 class Post(Item):
     title = Css('.entry-title')
     content = Css('.entry-content')
-
-    async def save(self):
-        print(self.results)
+    result_cls = FileResult("file:///scrapinghub.txt")
 ```
 
 The name is "Post" 
 The keys are "title" and "content".
 The value is the css selector or xpath selector.
-The "save" method is for handling the result of every item.
+`result_cls`: save data.
 
 ## Spider
 

@@ -25,6 +25,10 @@ class Item(metaclass=ItemType):
                 logger.error('Selector "{}" for {} was wrong, please check again'.format(selector.rule, name))
             else:
                 self.results[name] = value
+        if hasattr(self, 'save_url'):
+            self.url = getattr(self, 'save_url')
+        else:
+            self.url = "file:///tmp.data"
 
     def __getattr__(self, item):
         if item not in self.results:
@@ -32,4 +36,7 @@ class Item(metaclass=ItemType):
         return self.results[item]
 
     async def save(self):
-        raise NotImplementedError
+        if hasattr(self, 'result'):
+            await self.result.save(self.results)
+        else:
+            raise NotImplementedError
