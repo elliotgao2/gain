@@ -2,8 +2,8 @@ import asyncio
 import re
 
 import aiohttp
-from gain.request import fetch
 
+from gain.request import fetch
 from .log import logger
 
 
@@ -23,6 +23,8 @@ class Parser:
             self.pre_parse_urls.append(url)
 
     def parse_urls(self, html):
+        if html is None:
+            return
         urls = re.findall(self.rule, html)
         for url in urls:
             self.add(url)
@@ -37,7 +39,7 @@ class Parser:
         if html is None:
             spider.error_urls.append(url)
             self.pre_parse_urls.append(url)
-            return
+            return None
         if url in spider.error_urls:
             spider.error_urls.remove(url)
         spider.urls_count += 1

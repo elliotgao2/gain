@@ -1,9 +1,10 @@
 import asyncio
+import re
 from datetime import datetime
 
 import aiohttp
-from gain.request import fetch
 
+from gain.request import fetch
 from .log import logger
 
 try:
@@ -16,6 +17,7 @@ except ImportError:
 
 class Spider:
     start_url = ''
+    base_url = None
     parsers = []
     error_urls = []
     urls_count = 0
@@ -39,12 +41,14 @@ class Spider:
     def run(cls):
         logger.info('Spider started!')
         start_time = datetime.now()
-        semaphore = asyncio.Semaphore(cls.concurrency)
         loop = asyncio.get_event_loop()
 
-        tasks = asyncio.wait([parser.task(cls, semaphore) for parser in cls.parsers])
-
+        if cls.base_url is None:
+            cls.base_url = re.match('(http|https)://[\w\-_]+(\.[\w\-_]+)+/?', cls.start_url).group()
+            logger.info('Base url: {}'.format(cls.base_url))
         try:
+            semaphore = asyncio.Semaphore(cls.concurrency)
+            tasks = asyncio.wait([parser.task(cls, semaphore) for parser in cls.parsers])
             loop.run_until_complete(cls.init_parse(semaphore))
             loop.run_until_complete(tasks)
         except KeyboardInterrupt:
