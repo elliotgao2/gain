@@ -1,9 +1,10 @@
 import asyncio
 import re
+from html import unescape
 
 import aiohttp
-from gain.request import fetch
 
+from gain.request import fetch
 from .log import logger
 
 
@@ -22,15 +23,18 @@ class Parser:
             self.filter_urls.add(url)
             self.pre_parse_urls.append(url)
 
-    def parse_urls(self, html):
+    def parse_urls(self, html, base_url):
+        if html is None:
+            return
         urls = re.findall(self.rule, html)
         for url in urls:
+            url = unescape(url)
+            if not re.match('(http|https)://', url):
+                url = base_url + url
             self.add(url)
 
-    async def parse_item(self, html):
+    def parse_item(self, html):
         item = self.item(html)
-        await item.save()
-        self.item._item_count += 1
         return item
 
     async def execute_url(self, url, spider, session, semaphore):
@@ -39,14 +43,18 @@ class Parser:
         if html is None:
             spider.error_urls.append(url)
             self.pre_parse_urls.append(url)
-            return
+            return None
+
         if url in spider.error_urls:
             spider.error_urls.remove(url)
         spider.urls_count += 1
         self.parsing_urls.remove(url)
         self.done_urls.append(url)
+
         if self.item is not None:
-            await self.parse_item(html)
+            item = self.parse_item(html)
+            await item.save()
+            self.item._item_count += 1
             logger.info('Parsed({}/{}): {}'.format(len(self.done_urls), len(self.filter_urls), url))
         else:
             spider.parse(html)
