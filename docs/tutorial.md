@@ -5,9 +5,9 @@ from gain import Css, Item
 from gain.result import FileResult
 
 class Post(Item):
+    __result__ = FileResult("file:///scrapinghub.txt")
     title = Css('.entry-title')
     content = Css('.entry-content')
-    result = FileResult("file:///scrapinghub.txt")
 ```
 
 The name is "Post" 
