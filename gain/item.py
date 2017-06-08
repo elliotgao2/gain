@@ -11,9 +11,17 @@ class ItemType(type):
             if isinstance(value, Selector):
                 selectors[name] = value
         namespace['selectors'] = selectors
-        for name, value in selectors.items():
+        for name in selectors:
             del namespace[name]
         return type.__new__(mcs, name, bases, namespace)
+
+    @property
+    def name(self):
+        return self._item_name
+
+    @property
+    def count(self):
+        return self._item_count
 
 
 class Item(metaclass=ItemType):
@@ -29,6 +37,10 @@ class Item(metaclass=ItemType):
             self.url = getattr(self, 'save_url')
         else:
             self.url = "file:///tmp.data"
+
+    @classmethod
+    def count_add(cls, value=1):
+        cls._item_count += value
 
     def __getattr__(self, item):
         if item not in self.results:
