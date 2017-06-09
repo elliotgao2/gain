@@ -59,7 +59,7 @@ class Spider:
             end_time = datetime.now()
             for parser in cls.parsers:
                 if parser.item is not None:
-                    logger.info('Item "{}": {}'.format(parser.item._item_name, parser.item._item_count))
+                    logger.info('Item "{}": {}'.format(parser.item.name, parser.item.count))
             logger.info('Requests count: {}'.format(cls.urls_count))
             logger.info('Error count: {}'.format(len(cls.error_urls)))
             logger.info('Time usage: {}'.format(end_time - start_time))
