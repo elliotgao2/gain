@@ -1,4 +1,4 @@
-# <img width="64" height="64" src="/gaojiuli/gain/raw/master/img/logo.png"/>
+# <img width="64" height="64" src="img/logo.png"/>
 
 [![Build](https://travis-ci.org/gaojiuli/gain.svg?branch=master)](https://travis-ci.org/gaojiuli/gain)
 [![Python](https://img.shields.io/pypi/pyversions/gain.svg)](https://pypi.python.org/pypi/gain/)
