@@ -23,11 +23,15 @@ class Css(Selector):
     def parse_detail(self, html):
         d = pq(html)
         if self.attr is None:
-            try:
-                return d(self.rule)[0].text
-            except IndexError:
-                return None
-        return d(self.rule)[0].attr(self.attr, None)
+            rlt = []
+            for e in d(self.rule):
+                rlt.append(d(e).text())
+            return ' '.join(rlt) if len(rlt) != 0 else None
+        else:
+            attr_rlt = []
+            for e in d(self.rule):
+                attr_rlt.append(d(e).attr(self.attr))
+            return ' '.join(attr_rlt) if len(attr_rlt) != 0 else None
 
 
 class Xpath(Selector):
