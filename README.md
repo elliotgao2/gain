@@ -33,7 +33,8 @@ class Post(Item):
 
     async def save(self):
         async with aiofiles.open('scrapinghub.txt', 'a+') as f:
-            await f.write(self.results['title'])
+            # when the html being parsed couldn't find title, dict result wouldn't have the title key
+            await f.write(self.results.get('title','None') + '\n')
 
 
 class MySpider(Spider):
