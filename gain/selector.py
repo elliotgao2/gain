@@ -35,8 +35,8 @@ class Xpath(Selector):
         d = etree.HTML(html)
         try:
             if self.attr is None:
-                return d.xpath(self.rule)[0].text
-            return d.xpath(self.rule)[0].get(self.attr, None)
+                return [entry.text for entry in d.xpath(self.rule)]
+            return [entry.get(self.attr, None) for entry in d.xpath(self.rule)]
         except IndexError:
             return None
 
