@@ -1,5 +1,6 @@
 from .log import logger
 from .selector import Selector
+from html import unescape
 
 
 class ItemType(type):
@@ -28,7 +29,7 @@ class Item(metaclass=ItemType):
     def __init__(self, html):
         self.results = {}
         for name, selector in self.selectors.items():
-            value = selector.parse_detail(html)
+            value = selector.parse_detail(unescape(html))
             if value is None:
                 logger.error('Selector "{}" for {} was wrong, please check again'.format(selector.rule, name))
             else:

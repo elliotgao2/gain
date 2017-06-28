@@ -5,8 +5,7 @@
 [![Version](https://img.shields.io/pypi/v/gain.svg)](https://pypi.python.org/pypi/gain/)
 [![License](https://img.shields.io/pypi/l/gain.svg)](https://pypi.python.org/pypi/gain/)
 
-Web crawling framework for everyone. Written with asyncio, uvloop and aiohttp.
-Everyone could write their own web crawler easily with gain framework. Gain framework provide a pretty simple api.
+Web crawling framework for everyone. Written with `asyncio`, `uvloop` and `aiohttp`.
 
 ![](img/architecture.png)
 
@@ -26,15 +25,15 @@ Everyone could write their own web crawler easily with gain framework. Gain fram
 
 ```python
 from gain import Css, Item, Parser, Spider
-
+import aiofiles
 
 class Post(Item):
     title = Css('.entry-title')
     content = Css('.entry-content')
 
     async def save(self):
-        with open('scrapinghub.txt', 'a+') as f:
-            f.writelines(self.results['title'] + '\n')
+        async with aiofiles.open('scrapinghub.txt', 'a+') as f:
+            await f.write(self.results['title'])
 
 
 class MySpider(Spider):

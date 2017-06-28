@@ -1,3 +1,4 @@
+import aiofiles
 from gain import Css, Item, Parser, Regex, Spider
 
 
@@ -7,7 +8,8 @@ class Post(Item):
     regex_test = Regex('\d+')
 
     async def save(self):
-        print(self.title, '\n')
+        async with aiofiles.open('scrapinghub.txt', 'a+') as f:
+            await f.write(str(self.results))
 
 
 class MySpider(Spider):
