@@ -26,12 +26,12 @@ class Css(Selector):
             rlt = []
             for e in d(self.rule):
                 rlt.append(d(e).text())
-            return ' '.join(rlt) if len(rlt) != 0 else None
+            return rlt
         else:
             attr_rlt = []
             for e in d(self.rule):
                 attr_rlt.append(d(e).attr(self.attr))
-            return ' '.join(attr_rlt) if len(attr_rlt) != 0 else None
+            return attr_rlt
 
 
 class Xpath(Selector):
