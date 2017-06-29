@@ -22,6 +22,7 @@ class Spider:
     error_urls = []
     urls_count = 0
     concurrency = 5
+    interval = None #Todo: Limit the interval between two requests
     headers = {}
 
     @classmethod
