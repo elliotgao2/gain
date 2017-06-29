@@ -55,10 +55,12 @@ class Parser:
             item = self.parse_item(html)
             await item.save()
             self.item.count_add()
-            logger.info('Parsed({}/{}): {}'.format(len(self.done_urls), len(self.filter_urls), url))
+            logger.info('Parsed({}/{}): {}'.format(
+                len(self.done_urls), len(self.filter_urls), url))
         else:
             spider.parse(html)
-            logger.info('Followed({}/{}): {}'.format(len(self.done_urls), len(self.filter_urls), url))
+            logger.info('Followed({}/{}): {}'.format(
+                len(self.done_urls), len(self.filter_urls), url))
 
     async def task(self, spider, semaphore):
         with aiohttp.ClientSession() as session:
@@ -68,4 +70,5 @@ class Parser:
                     continue
                 url = self.pre_parse_urls.pop()
                 self.parsing_urls.append(url)
-                asyncio.ensure_future(self.execute_url(url, spider, session, semaphore))
+                asyncio.ensure_future(self.execute_url(
+                    url, spider, session, semaphore))
