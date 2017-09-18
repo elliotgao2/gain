@@ -69,11 +69,12 @@ class MySpider(Spider):
                XPathParser('//div[contains(@class, "pagination")]/ul/li/a[contains(@href, "page")]/@href'),
                XPathParser('//div[@class="mini-left"]//div[contains(@class, "mini-title")]/a/@href', Post)
               ]
+    proxy = 'https://localhost:1234'
 
 MySpider.run()
 
 ```
-
+You can add proxy setting to spider as above. 
 
 
 2. Run `python spider.py`
