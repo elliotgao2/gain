@@ -17,7 +17,7 @@ async def fetch(url, spider, session, semaphore):
                 headers = spider.headers()
             else:
                 headers = spider.headers
-            async with session.get(url, headers=headers) as response:
+            async with session.get(url, headers=headers, proxy=spider.proxy) as response:
                 if response.status in [200, 201]:
                     data = await response.text()
                     return data
