@@ -1,6 +1,7 @@
 import asyncio
 import re
 from html import unescape
+from urllib.parse import urljoin
 
 import aiohttp
 from lxml import etree
@@ -19,6 +20,15 @@ class BaseParser(object):
         self.done_urls = []
 
     def parse_urls(self, html, base_url):
+        if html is None:
+            return
+        for url in self.abstract_urls(html):
+            url = unescape(url)
+            if not re.match('(http|https)://', url):
+                url = urljoin(base_url, url)
+            self.add(url)
+    
+    def abstract_urls(self, html):
         raise NotImplementedError
 
     def add(self, urls):
@@ -27,7 +37,6 @@ class BaseParser(object):
             self.filter_urls.add(url)
             self.pre_parse_urls.append(url)
 
-    
     def parse_item(self, html):
         item = self.item(html)
         return item
@@ -67,25 +76,13 @@ class BaseParser(object):
 
 
 class Parser(BaseParser):
-    def parse_urls(self, html, base_url):
-        if html is None:
-            return
+    def abstract_urls(self, html):
         urls = re.findall(self.rule, html)
-        for url in urls:
-            url = unescape(url)
-            if not re.match('(http|https)://', url):
-                url = base_url + url
-            self.add(url)
+        return urls
 
 
 class XPathParser(BaseParser):
-    def parse_urls(self, html, base_url):
-        if html is None:
-            return
+    def abstract_urls(self, html):
         doc = etree.HTML(html)
         urls = doc.xpath(self.rule)
-        for url in urls:
-            url = unescape(url)
-            if not re.match('(http|https)://', url):
-                url = base_url + url
-            self.add(url)
+        return urls
