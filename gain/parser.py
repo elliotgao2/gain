@@ -3,12 +3,13 @@ import re
 from html import unescape
 
 import aiohttp
+from lxml import etree
 
 from gain.request import fetch
 from .log import logger
 
 
-class Parser:
+class BaseParser(object):    
     def __init__(self, rule, item=None):
         self.rule = rule
         self.item = item
@@ -17,22 +18,16 @@ class Parser:
         self.filter_urls = set()
         self.done_urls = []
 
+    def parse_urls(self, html, base_url):
+        raise NotImplementedError
+
     def add(self, urls):
         url = '{}'.format(urls)
         if url not in self.filter_urls:
             self.filter_urls.add(url)
             self.pre_parse_urls.append(url)
 
-    def parse_urls(self, html, base_url):
-        if html is None:
-            return
-        urls = re.findall(self.rule, html)
-        for url in urls:
-            url = unescape(url)
-            if not re.match('(http|https)://', url):
-                url = base_url + url
-            self.add(url)
-
+    
     def parse_item(self, html):
         item = self.item(html)
         return item
@@ -69,3 +64,28 @@ class Parser:
                 url = self.pre_parse_urls.pop()
                 self.parsing_urls.append(url)
                 asyncio.ensure_future(self.execute_url(url, spider, session, semaphore))
+
+
+class Parser(BaseParser):
+    def parse_urls(self, html, base_url):
+        if html is None:
+            return
+        urls = re.findall(self.rule, html)
+        for url in urls:
+            url = unescape(url)
+            if not re.match('(http|https)://', url):
+                url = base_url + url
+            self.add(url)
+
+
+class XPathParser(BaseParser):
+    def parse_urls(self, html, base_url):
+        if html is None:
+            return
+        doc = etree.HTML(html)
+        urls = doc.xpath(self.rule)
+        for url in urls:
+            url = unescape(url)
+            if not re.match('(http|https)://', url):
+                url = base_url + url
+            self.add(url)
