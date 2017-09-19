@@ -33,8 +33,8 @@ class Post(Item):
 
     async def save(self):
         async with aiofiles.open('scrapinghub.txt', 'a+') as f:
-            await f.write(self.results['title'])
-
+            for title in self.results['title']:
+                f.writelines(title+'\n')
 
 class MySpider(Spider):
     concurrency = 5
