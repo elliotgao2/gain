@@ -30,7 +30,7 @@ class Spider:
     def is_running(cls):
         is_running = False
         for parser in cls.parsers:
-            if len(parser.pre_parse_urls) > 0 or len(parser.parsing_urls) > 0:
+            if not parser.pre_parse_urls.empty() or len(parser.parsing_urls) > 0:
                 is_running = True
         return is_running
 

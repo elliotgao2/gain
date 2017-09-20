@@ -1,4 +1,5 @@
 import asyncio
+from asyncio import Queue
 import re
 from html import unescape
 from urllib.parse import urljoin
@@ -15,7 +16,7 @@ class BaseParser(object):
         self.rule = rule
         self.item = item
         self.parsing_urls = []
-        self.pre_parse_urls = []
+        self.pre_parse_urls = Queue()
         self.filter_urls = set()
         self.done_urls = []
 
@@ -35,7 +36,7 @@ class BaseParser(object):
         url = '{}'.format(urls)
         if url not in self.filter_urls:
             self.filter_urls.add(url)
-            self.pre_parse_urls.append(url)
+            self.pre_parse_urls.put_nowait(url)
 
     def parse_item(self, html):
         item = self.item(html)
@@ -46,7 +47,7 @@ class BaseParser(object):
 
         if html is None:
             spider.error_urls.append(url)
-            self.pre_parse_urls.append(url)
+            self.pre_parse_urls.put_nowait(url)
             return None
 
         if url in spider.error_urls:
@@ -67,10 +68,7 @@ class BaseParser(object):
     async def task(self, spider, semaphore):
         with aiohttp.ClientSession() as session:
             while spider.is_running():
-                if len(self.pre_parse_urls) == 0:
-                    await asyncio.sleep(0.5)
-                    continue
-                url = self.pre_parse_urls.pop()
+                url = await self.pre_parse_urls.get()
                 self.parsing_urls.append(url)
                 asyncio.ensure_future(self.execute_url(url, spider, session, semaphore))
 
