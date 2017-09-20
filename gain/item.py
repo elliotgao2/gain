@@ -53,3 +53,6 @@ class Item(metaclass=ItemType):
             await self.__result__.save(self.results)
         else:
             raise NotImplementedError
+
+    def __repr__(self):
+        return '<item {}>'.format(self.results)
