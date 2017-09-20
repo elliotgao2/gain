@@ -146,3 +146,6 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
+# temp file
+spider.data
+
