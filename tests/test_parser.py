@@ -28,4 +28,4 @@ def test_parse_urls():
 
     parser = Parser('item\?id=\d+', User)
     parser.parse_urls(html, 'https://blog.scrapinghub.com')
-    assert parser.pre_parse_urls.__len__() == 2
+    assert parser.pre_parse_urls.qsize() == 2
