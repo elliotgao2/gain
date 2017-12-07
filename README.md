@@ -47,7 +47,7 @@ class MySpider(Spider):
 MySpider.run()
 ```
 
-Or use XpathParser:
+Or use XPathParser:
 
 ```python
 from gain import Css, Item, Parser, XPathParser, Spider
