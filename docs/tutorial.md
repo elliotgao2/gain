@@ -33,7 +33,7 @@ MySpider.run()
 
 Inherit the gain.Spider class. And do some config.
 The "start_url" means the starting point.
-The "frequency" means the concurrent quantity.
+The "concurrency" means the concurrent quantity.
 The "parsers" is a list of `gain.Paser` instance.
 A gain.Parser instance describe how the spider works.
 A Parser instance with one parameter means following the urls.
