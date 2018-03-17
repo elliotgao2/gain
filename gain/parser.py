@@ -68,9 +68,12 @@ class BaseParser(object):
     async def task(self, spider, semaphore):
         async with aiohttp.ClientSession(cookie_jar=spider.cookie_jar) as session:
             while spider.is_running():
-                url = await self.pre_parse_urls.get()
-                self.parsing_urls.append(url)
-                asyncio.ensure_future(self.execute_url(url, spider, session, semaphore))
+                try:
+                    url = await asyncio.wait_for(self.pre_parse_urls.get(), 5)
+                    self.parsing_urls.append(url)
+                    asyncio.ensure_future(self.execute_url(url, spider, session, semaphore))
+                except asyncio.TimeoutError:
+                    pass
 
 
 class Parser(BaseParser):
