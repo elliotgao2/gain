@@ -66,7 +66,7 @@ class BaseParser(object):
             logger.info('Followed({}/{}): {}'.format(len(self.done_urls), len(self.filter_urls), url))
 
     async def task(self, spider, semaphore):
-        with aiohttp.ClientSession() as session:
+        async with aiohttp.ClientSession(cookie_jar=spider.cookie_jar) as session:
             while spider.is_running():
                 url = await self.pre_parse_urls.get()
                 self.parsing_urls.append(url)

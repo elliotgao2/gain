@@ -25,6 +25,7 @@ class Spider:
     interval = None #Todo: Limit the interval between two requests
     headers = {}
     proxy = None
+    cookie_jar = None
 
     @classmethod
     def is_running(cls):
@@ -70,6 +71,6 @@ class Spider:
 
     @classmethod
     async def init_parse(cls, semaphore):
-        with aiohttp.ClientSession() as session:
+        async with aiohttp.ClientSession(cookie_jar=cls.cookie_jar) as session:
             html = await fetch(cls.start_url, cls, session, semaphore)
             cls.parse(html)
