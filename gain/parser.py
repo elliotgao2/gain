@@ -6,6 +6,8 @@ from urllib.parse import urljoin
 
 import aiohttp
 from lxml import etree
+import lxml
+import urllib.parse as urlparse
 
 from gain.request import fetch
 from .log import logger
@@ -23,13 +25,16 @@ class BaseParser(object):
     def parse_urls(self, html, base_url):
         if html is None:
             return
-        for url in self.abstract_urls(html):
+        for url in self.abstract_urls(html, base_url):
+
             url = unescape(url)
             if not re.match('(http|https)://', url):
+                # Will fail if base_url != current crawling domain.
                 url = urljoin(base_url, url)
+
             self.add(url)
     
-    def abstract_urls(self, html):
+    def abstract_urls(self, html, base_url):
         raise NotImplementedError
 
     def add(self, urls):
@@ -77,8 +82,28 @@ class BaseParser(object):
 
 
 class Parser(BaseParser):
-    def abstract_urls(self, html):
-        urls = re.findall(self.rule, html)
+    def abstract_urls(self, html, base_url):
+        _urls = []
+
+        try:
+            document = lxml.html.fromstring(html)
+            document_domain = urlparse.urlparse(base_url).netloc
+            
+            for (al, attr, link, pos) in document.iterlinks():
+                link = re.sub("#.*", "", link or "")
+
+                if not link:
+                    continue
+
+                _urls.append(link)
+
+        except (etree.XMLSyntaxError, etree.ParserError) as e:
+            logger.error("While parsing the html for {} we received the following error {}.".format(base_url, e))
+
+        # Cleanup urls
+        r = re.compile(self.rule)
+        urls = list(filter(r.match, _urls))
+
         return urls
 
 
