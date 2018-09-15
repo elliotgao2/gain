@@ -24,3 +24,7 @@ def test_item_parse():
     assert 'karma' in user.results
     assert user.username == 'tom'
     assert user.karma == '15'
+
+if __name__ == "__main__":
+    test_item_define()
+    test_item_parse()

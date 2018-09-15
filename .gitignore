@@ -149,3 +149,8 @@ fabric.properties
 # temp file
 spider.data
 
+# IDE
+.vscode
+
+# PyTest
+.pytest_cache
