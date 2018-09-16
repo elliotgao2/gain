@@ -4,6 +4,8 @@ from html import unescape
 
 
 class ItemType(type):
+    _item_count =  0
+
     def __new__(mcs, name, bases, namespace):
         selectors = {}
         namespace['_item_name'] = name

@@ -18,6 +18,7 @@ setup(
         'aiohttp',
         'pyquery',
         'aiofiles',
+        'aiocache[redis]'
     ],
     license='GNU GPL 3',
     packages=find_packages(),

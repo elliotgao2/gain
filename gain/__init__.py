@@ -2,10 +2,10 @@ import logging
 from .item import Item
 # from .log import logger
 from .parser import Parser, XPathParser
-from .selector import Css, Regex, Xpath
+from .selector import Css, Regex, Xpath, Pyq
 from .spider import Spider
 
-__all__ = ('Css', 'Xpath', 'Item', 'Spider', 'Parser', 'XPathParser', 'Regex')
+__all__ = ('Css', 'Xpath', 'Pyq', 'Item', 'Spider', 'Parser', 'XPathParser', 'Regex')
 
 
 logging.basicConfig(level=logging.INFO,

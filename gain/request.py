@@ -28,7 +28,7 @@ async def fetch(url, spider, session, semaphore):
                         data = await response.text()
 
                         if spider.cache_enabled:
-                            await cache.set(url_hash, data)
+                            await cache.set(md5hash(url), data)
 
                         if cache: await cache.close()  # Close connection.
                         return data
@@ -53,7 +53,7 @@ async def fetch(url, spider, session, semaphore):
         if isinstance(spider.proxy, types.GeneratorType):
             proxy = next(spider.proxy)
 
-    if spider.cache_enabled:
+    if spider.cache_enabled and url not in spider.cache_disabled_urls:
         url_hash = md5hash(url)
 
         # Validate Cache

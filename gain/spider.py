@@ -33,6 +33,7 @@ class Spider:
     cookie_jar = None
     caches = None
     cache_enabled = False
+    cache_disabled_urls = []
     cache_alias = "default"
     cache_config = {
         'default': {

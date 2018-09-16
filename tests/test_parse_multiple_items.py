@@ -14,4 +14,7 @@ class MySpider(Spider):
     start_url = 'http://quotes.toscrape.com/'
     parsers = [Parser('/page/2/', Post)]
 
-MySpider.run()
+
+# asserts in this file have no affect on pytest on failure, needs review.
+# def test_spider():
+#     MySpider.run()
