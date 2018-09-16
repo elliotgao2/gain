@@ -4,15 +4,19 @@ import logging as logger
 from lxml import etree
 import lxml.html as lx
 from pyquery import PyQuery as pq
+from .tool import manipulation
 
+manipulation_options = [
+    "clean_string"
+]
 
 class Selector:
     def __init__(self, rule, attr=None, **kwargs):
         self.rule = rule
         self.attr = attr
         self.index = 0
-        self.page_element = None
-        self.method,  self.attr, self.split, self.splitIndex = (None,)*4
+        self.manipulate = []
+        self.page_element , self.method = (None,)*2
 
         for k, v in kwargs.items():
             setattr(self, k, v)
@@ -48,6 +52,10 @@ class Css(Selector):
                 logger.error( 'Error:{0}'.format(e))
 
     def parse_detail(self, html):
+        """
+            DOCS: 21.5.3.2. Element Objects
+            https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.attrib
+        """
         self.doc = lx.fromstring(html)
         self.css_select = self.doc.cssselect
         self.xpath = self.doc.xpath
@@ -73,6 +81,35 @@ class Css(Selector):
             self._set_element(
                 lambda: self.css_select(self.rule)[int(self.index)].get(self.attr)
                 )
+
+        elif self.method == 'dict' or self.attr is not None:
+            self._set_element(
+                lambda: dict(self.css_select(self.rule)[int(self.index)].attrib)
+                )
+
+        elif self.method == 'itertext':
+            """
+                Iterate through an ul li list to get a list of li elements
+            """
+            self._set_element(
+                lambda: list(
+                            filter(None, 
+                                [manipulation.clean_string(line) for line in self.css_select(self.rule)[int(self.index)].itertext()]
+                        )
+                    )
+                )
+
+        # manipulations
+        if len(self.manipulate):
+            for m in self.manipulate:
+                if m in manipulation_options:
+                    manipulate = getattr(manipulation, m)
+                    self.page_element = manipulate(self.page_element)
+                else:
+                    logger.error('Manipulation of type: "{}" is not known to the system. These are the options you can use: {}'.format(
+                        m, ', '.join(manipulation_options)
+                        )
+                    )
 
         return self.page_element
 
