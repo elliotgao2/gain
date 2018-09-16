@@ -12,7 +12,6 @@ class MySpider(Spider):
     concurrency = 5
     headers = {'User-Agent': 'Google Spider'}
     start_url = 'http://quotes.toscrape.com/'
-    parsers = [Parser('/page/2/'),
-               Parser('/page/2/', Post)]
+    parsers = [Parser('/page/2/', Post)]
 
 MySpider.run()

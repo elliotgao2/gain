@@ -14,6 +14,11 @@ try:
 except ImportError:
     pass
 
+try:
+    from aiocache import caches
+except ImportError:
+    logger.info("Install aiocache to use cache: pipenv install aiocache")
+
 
 class Spider:
     start_url = ''
@@ -26,6 +31,27 @@ class Spider:
     headers = {}
     proxy = None
     cookie_jar = None
+    caches = None
+    cache_enabled = False
+    cache_alias = "default"
+    cache_config = {
+        'default': {
+            'cache': "aiocache.RedisCache",
+            'endpoint': "127.0.0.1",
+            'port': 6379,
+            'timeout': 1,
+            'serializer': {
+                'class': "aiocache.serializers.PickleSerializer"
+            }
+        }
+    }
+
+    @classmethod
+    def init_caches(cls):
+        if caches and not cls.caches:
+            if cls.cache_enabled and cls.cache_config:
+                caches.set_config(cls.cache_config)
+                cls.caches = caches
 
     @classmethod
     def is_running(cls):
@@ -42,6 +68,7 @@ class Spider:
 
     @classmethod
     def run(cls):
+        cls.init_caches()
         logger.info('Spider started!')
         start_time = datetime.now()
         loop = asyncio.get_event_loop()
@@ -71,6 +98,7 @@ class Spider:
 
     @classmethod
     async def init_parse(cls, semaphore):
+        cls.init_caches()
         async with aiohttp.ClientSession(cookie_jar=cls.cookie_jar) as session:
             html = await fetch(cls.start_url, cls, session, semaphore)
             cls.parse(html)
