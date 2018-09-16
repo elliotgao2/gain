@@ -5,7 +5,7 @@ from datetime import datetime
 import aiohttp
 from gain.request import fetch
 
-from .log import logger
+import logging as logger
 
 try:
     import uvloop

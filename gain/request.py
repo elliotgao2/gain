@@ -1,7 +1,7 @@
 import asyncio
 import types
 
-from .log import logger
+import logging as logger
 
 try:
     import uvloop

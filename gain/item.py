@@ -1,4 +1,4 @@
-from .log import logger
+import logging as logger
 from .selector import Selector
 from html import unescape
 

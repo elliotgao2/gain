@@ -10,7 +10,7 @@ import lxml
 import urllib.parse as urlparse
 
 from gain.request import fetch
-from .log import logger
+import logging as logger
 
 
 class BaseParser(object):    
