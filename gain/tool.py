@@ -2,7 +2,7 @@ import re
 import logging
 from typing import List
 
-
+# Becomes clean and accepts str, list, dict
 def clean_string(s:str) -> str or None:
     """
         s = string to clean
@@ -52,7 +52,8 @@ def str_num_only(s, protect_char='') -> str or s:
     else:
         return s
 
-
+#  Separate code
+# Users should decide on this, not me
 def clean_phone_number(s:str) -> str:
     """s = "+ 32 16 23 69 36"
     clean_phone_number(s)
@@ -67,7 +68,8 @@ def clean_phone_number(s:str) -> str:
     else:
         return s
 
-
+# Remove clean phone number
+# Users can apply clean to gain the same affect.
 def extract_phone(s:str) -> list:
     """ s = 'Company Name and Email: info@example-travel.com Tel.: 025 - 5339007 Mob.: +316-11465330,tel is 0031-6190-60870 and 06 31 28 08 74 or 06 1802 0872'
     extract_phone(s)
@@ -122,7 +124,7 @@ def to_date_iso(datestring: str) -> str:
     return str(parser.parse(datestring, default=default))
 
 
-class manipulation:
+class Manipulation:
     @staticmethod
     def clean_string(s):
         return clean_string(s)

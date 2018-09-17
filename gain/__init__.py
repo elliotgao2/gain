@@ -4,8 +4,9 @@ from .item import Item
 from .parser import Parser, XPathParser
 from .selector import Css, Regex, Xpath, Pyq
 from .spider import Spider
+from .tool import Manipulation
 
-__all__ = ('Css', 'Xpath', 'Pyq', 'Item', 'Spider', 'Parser', 'XPathParser', 'Regex')
+__all__ = ('Css', 'Xpath', 'Pyq', 'Item', 'Spider', 'Parser', 'XPathParser', 'Regex', 'Manipulation')
 
 
 logging.basicConfig(level=logging.INFO,

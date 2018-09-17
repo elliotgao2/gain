@@ -4,7 +4,7 @@ import logging as logger
 from lxml import etree
 import lxml.html as lx
 from pyquery import PyQuery as pq
-from .tool import manipulation
+from .tool import Manipulation
 
 manipulation_options = [
     "clean_string",
@@ -98,8 +98,43 @@ class Css(Selector):
             self._set_element(
                 lambda: list(
                             filter(None, 
-                                [manipulation.clean_string(line) for line in self.css_select(self.rule)[int(self.index)].itertext()]
+                                [Manipulation.clean_string(line) for line in self.css_select(self.rule)[int(self.index)].itertext()]
                         )
+                    )
+                )
+
+        # We need the list element for the list_dict element to work
+        elif self.method == 'list' or 'table':
+            """
+                Iterate through all elements found in page and return as a list
+            """
+            self._set_element(
+                lambda: [el.text_content() for el in self.css_select(self.rule)]
+                )
+
+        if self.method == 'table':
+            """
+                Iterate through all elements found in a page that has a list with an even number like a table (td)
+                and pair the values as key, value pairs and return as a dict
+                
+                table_dict = dict()
+                for idx, item in enumerate(table):
+                    # if Uneven it's a key, even is a value
+                    if not idx % 2:
+                        table_dict[item] = table[idx+1]
+            """
+            if isinstance(self.page_element, list) and (len(self.page_element) % 2) == 0:
+                clean = Manipulation.clean_string
+                self._set_element(
+                    lambda: {
+                        clean(self.page_element[idx-1]):clean(value) for idx, value in enumerate(self.page_element) if idx % 2
+                        }
+                    )
+            else:
+                logger.error(
+                    "Object is a list: {} and the length must be even: {}. Both values must be true or else it is not a valid table. \
+                    Validate your selector and the source code.".format(
+                        isinstance(self.page_element, list),  (len(self.page_element) % 2) == 0
                     )
                 )
 
@@ -107,7 +142,7 @@ class Css(Selector):
         if len(self.manipulate):
             for m in self.manipulate:
                 if m in manipulation_options:
-                    manipulate = getattr(manipulation, m)
+                    manipulate = getattr(Manipulation, m)
                     self.page_element = manipulate(self.page_element)
                 else:
                     logger.error('Manipulation of type: "{}" is not known to the system. These are the options you can use: {}'.format(

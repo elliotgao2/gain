@@ -84,6 +84,38 @@ html = """
                <br><br><span style="color:#51a4d9;">E: </span> carlson@stjames.uk
                <br>
            </div>
+           <div class="col-sm-5">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Max Capacity</td>
+                            <td> 24 </td>
+                        </tr>
+                        <tr>
+                            <td>Base price P.P (4 u/10 p)</td>
+                            <td>€ 45 </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+           <div class="col-sm-5 col-sm-offset-1">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Wifi</td>
+                            <td> Free wifi </td>
+                        </tr>
+                        <tr>
+                            <td>Airco</td>
+                            <td> Yes </td>
+                        </tr>
+                        <tr>
+                            <td>Swimming Pool</td>
+                            <td> Yes </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
        </div>
    </body>
    </html>
@@ -178,6 +210,25 @@ def test_parse_css_dict():
     assert extract.attrib_dict["property"] == 'og:title'
 
 
+def test_parse_css_table():
+    """
+        Note the fact that there are 2 tables in the html.
+        By using the right selector we can navigate all tables
+    """
+    class Test(Item):
+        t_list = table = Css('table tbody tr td', **{"method":"list"})
+        d_table = Css('table tbody tr td', **{"method":"table"})
+        
+    parser = Parser(html, Test)
+    extract = parser.parse_item(html)
+
+    assert isinstance(extract.t_list, list)
+    assert extract.t_list.__len__() == 10
+    assert isinstance(extract.d_table, dict)
+    assert len(extract.d_table.keys()) == 5
+    assert extract.d_table["Max Capacity"] == "24"
+
+
 def test_parse_css_complex():
     class Test(Item):
         contact = Css('.contact', **{"method":"itertext"})
@@ -203,4 +254,5 @@ if __name__ == "__main__":
     test_parse_css_get()
     test_parse_css_itertext()
     test_parse_css_dict()
+    test_parse_css_table()
     test_parse_css_complex()
