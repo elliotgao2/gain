@@ -23,6 +23,7 @@ html = """
            <h1 class="deal-page-title">
                <strong>Today 20% off for the weekend special, now for 200€</strong>
            </h1>
+           <div class=deal-page-time>may 20 2018</div>
            <div>
                <img src="/images/branding/googlelogo/2x/googlelogo_color_120x44dp.png" alt="Google" data-atf="3" width="120" height="44">
                <div class="map_canvas" data-address="263 Prinsengracht, Amsterdam">
@@ -77,9 +78,11 @@ html = """
                Mr.
                C.J.
                Carlson
-               <br><br><span style="color:#51a4d9;">T: </span> +36 074-21292733
+               <br><br><span style="color:#51a4d9;">T: </span> +36 421292733 or +380974027536
                <br>
                <span style="color:#51a4d9;">W:</span> <a href="http://www.stjames.uk" target="_blank">www.stjames.uk</a>
+               <br><br><span style="color:#51a4d9;">E: </span> carlson@stjames.uk
+               <br>
            </div>
        </div>
    </body>
@@ -175,6 +178,23 @@ def test_parse_css_dict():
     assert extract.attrib_dict["property"] == 'og:title'
 
 
+def test_parse_css_complex():
+    class Test(Item):
+        contact = Css('.contact', **{"method":"itertext"})
+        phone = Css('.contact', **{"method":"text_content", "manipulate": ["extract_phone"]})
+        email = Css('.contact', **{"method":"text_content", "manipulate": ["extract_email"]})
+        website = Css('.contact', **{"method":"text_content", "manipulate": ["extract_website"]})
+        date = Css('.deal-page-time', **{"method":"text_content", "manipulate": ["to_date_iso"]})
+
+    parser = Parser(html, Test)
+    extract = parser.parse_item(html)
+
+    assert extract.phone == ['0036421292733', '00380974027536']
+    assert extract.email == ['carlson@stjames.uk']
+    assert extract.website == ['www.stjames.uk']
+    assert extract.contact[4] == "Mr. C.J. Carlson"
+    assert extract.date == "2018-05-20 00:00:00"
+
 if __name__ == "__main__":
     test_parse()
     test_parse_urls()
@@ -183,3 +203,4 @@ if __name__ == "__main__":
     test_parse_css_get()
     test_parse_css_itertext()
     test_parse_css_dict()
+    test_parse_css_complex()

@@ -7,7 +7,11 @@ from pyquery import PyQuery as pq
 from .tool import manipulation
 
 manipulation_options = [
-    "clean_string"
+    "clean_string",
+    "extract_email",
+    "extract_phone",
+    "extract_website",
+    "to_date_iso"
 ]
 
 class Selector:
