@@ -47,6 +47,11 @@ class Spider:
         }
     }
 
+    test = False
+    test_class = None
+    limit_requests = False
+    max_requests = 1
+
     @classmethod
     def init_caches(cls):
         if caches and not cls.caches:
@@ -57,9 +62,32 @@ class Spider:
     @classmethod
     def is_running(cls):
         is_running = False
+        cancel = False
+
+        if cls.test:
+            parser_stats = {parser.item.name:parser.item.count for parser in cls.parsers if parser.item is not None}
+            for k, v in parser_stats.items():
+                if v >= cls.max_requests:
+                    cancel = True
+                else:
+                    cancel = False
+            try:
+                if cls.test_class and parser_stats[cls.test_class] >= cls.max_requests:
+                    cancel = True
+            except KeyError:
+                logger.error('Your test class "{}" does not exist.'.format(cls.test_class))
+
+        # Limits actuall requests
+        if cls.limit_requests and cls.urls_count >= cls.max_requests:
+            cancel = True
+
+        if cancel:
+            cls.cancel_all()
+
         for parser in cls.parsers:
             if not parser.pre_parse_urls.empty() or len(parser.parsing_urls) > 0:
                 is_running = True
+
         return is_running
 
     @classmethod
@@ -82,10 +110,10 @@ class Spider:
             tasks = asyncio.wait([parser.task(cls, semaphore) for parser in cls.parsers])
             loop.run_until_complete(cls.init_parse(semaphore))
             loop.run_until_complete(tasks)
-        except KeyboardInterrupt:
-            for task in asyncio.Task.all_tasks():
-                task.cancel()
-            loop.run_forever()
+            # Close loop in try, it's async so comes after final
+            loop.close() 
+        except (KeyboardInterrupt, asyncio.CancelledError):
+            cls.cancel_all()
         finally:
             end_time = datetime.now()
             for parser in cls.parsers:
@@ -95,7 +123,11 @@ class Spider:
             logger.info('Error count: {}'.format(len(cls.error_urls)))
             logger.info('Time usage: {}'.format(end_time - start_time))
             logger.info('Spider finished!')
-            loop.close()
+
+    @staticmethod 
+    def cancel_all():
+        for task in asyncio.Task.all_tasks():
+            task.cancel()
 
     @classmethod
     async def init_parse(cls, semaphore):

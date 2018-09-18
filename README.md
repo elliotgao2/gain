@@ -181,6 +181,17 @@ class MySpider(Spider):
     }
 ```
 
+## Spider API
+
+
+| Key  | Default  | Values  | Description  | Relation  |
+|---|---|---|---|---|
+| test | False  | Boolean  | Set to True so you can test your Item Parser Css or Xpath code for the maximum amount of requests (max_request)  | test_class, max_request  |
+| test_class  | None  | Item parser class name: String  | Test only the parser of a specific class_name  | test |
+| limit_requests  | False  | Boolean  | Set to True to limit the actual external requests to the value of max_requests  | max_requests  |
+| max_requests  |  1 | Number  | Maximum amount of requests to be executed for the limit_requests or test feature  | test,  limit_requests |
+
+
 ## Example
 
 The examples are in the `/example/` directory.
