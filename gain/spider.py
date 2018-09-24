@@ -112,7 +112,7 @@ class Spider:
             loop.run_until_complete(tasks)
             # Close loop in try, it's async so comes after final
             loop.close() 
-        except (KeyboardInterrupt, asyncio.CancelledError):
+        except (KeyboardInterrupt, SystemExit, asyncio.CancelledError):
             cls.cancel_all()
         finally:
             end_time = datetime.now()

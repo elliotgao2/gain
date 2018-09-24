@@ -63,7 +63,17 @@ class BaseParser(object):
 
         if self.item is not None:
             item = self.parse_item(html)
-            await item.save()
+
+            try:
+                await item.save()
+            except Exception as e:
+                import sys
+                system = sys.exc_info()[0]
+                
+                logger.error(
+                    "Your spider code has the following errors: {} {} \n".format(system, e)
+                )
+
             self.item.count_add()
             logger.info('Parsed({}/{}): {}'.format(len(self.done_urls), len(self.filter_urls), url))
         else:
