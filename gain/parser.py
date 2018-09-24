@@ -43,8 +43,8 @@ class BaseParser(object):
             self.filter_urls.add(url)
             self.pre_parse_urls.put_nowait(url)
 
-    def parse_item(self, html):
-        item = self.item(html)
+    def parse_item(self, html, url=None):
+        item = self.item(html, url)
         return item
 
     async def execute_url(self, url, spider, session, semaphore):
@@ -62,14 +62,14 @@ class BaseParser(object):
         self.done_urls.append(url)
 
         if self.item is not None:
-            item = self.parse_item(html)
+            item = self.parse_item(html, url)
 
             try:
                 await item.save()
             except Exception as e:
                 import sys
                 system = sys.exc_info()[0]
-                
+
                 logger.error(
                     "Your spider code has the following errors: {} {} \n".format(system, e)
                 )

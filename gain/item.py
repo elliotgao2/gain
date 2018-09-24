@@ -28,8 +28,12 @@ class ItemType(type):
 
 
 class Item(metaclass=ItemType):
-    def __init__(self, html):
+    def __init__(self, html, url=None):
         self.results = {}
+
+        if url:
+            self.results["url"] = url
+
         for name, selector in self.selectors.items():
             value = selector.parse_detail(unescape(html))
             if value is None:
