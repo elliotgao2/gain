@@ -9,7 +9,7 @@ from lxml import etree
 import lxml
 import urllib.parse as urlparse
 
-from gain.request import fetch
+from .request import fetch
 import logging as logger
 
 

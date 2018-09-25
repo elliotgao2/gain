@@ -63,6 +63,14 @@ class Css(Selector):
         self.doc = lx.fromstring(html)
         self.css_select = self.doc.cssselect
         self.xpath = self.doc.xpath
+        index = 0
+
+        try:
+            index = int(self.index)
+        except (IndexError, ValueError) as e:
+            logger.error(
+                "Your index is incorrect because of {}, we will continue to use the default index of 0 (zero)".format(e)
+            )
 
         # This makes it backwards compatible to V0.1.14 for original "rule" unless JQuery statements have been used
         if not self.method and self.attr is None:  
@@ -70,25 +78,28 @@ class Css(Selector):
                 lambda: self.css_select(self.rule)[0].text
                 )
 
+        elif self.method == 'selector':
+            return self.css_select(self.rule)
+
         elif self.method == 'text':
             self._set_element(
-                lambda: self.css_select(self.rule)[int(self.index)].text
+                lambda: self.css_select(self.rule)[index].text
                 )
 
         elif self.method == 'text_content':
             self._set_element(
-                lambda: self.css_select(self.rule)[int(self.index)].text_content()
+                lambda: self.css_select(self.rule)[index].text_content()
                 )
 
         # This makes it backwards compatible to V0.1.14 for original "attr" unless JQuery statements have been used
         elif self.method == 'get' or self.attr is not None:
             self._set_element(
-                lambda: self.css_select(self.rule)[int(self.index)].get(self.attr)
+                lambda: self.css_select(self.rule)[index].get(self.attr)
                 )
 
         elif self.method == 'dict' or self.attr is not None:
             self._set_element(
-                lambda: dict(self.css_select(self.rule)[int(self.index)].attrib)
+                lambda: dict(self.css_select(self.rule)[index].attrib)
                 )
 
         elif self.method == 'itertext':
@@ -98,7 +109,7 @@ class Css(Selector):
             self._set_element(
                 lambda: list(
                             filter(None, 
-                                [Manipulation.clean_string(line) for line in self.css_select(self.rule)[int(self.index)].itertext()]
+                                [Manipulation.clean_string(line) for line in self.css_select(self.rule)[index].itertext()]
                         )
                     )
                 )
