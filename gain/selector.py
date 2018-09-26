@@ -152,6 +152,10 @@ class Css(Selector):
         # manipulations
         if len(self.manipulate):
             for m in self.manipulate:
+                # Execute custom user f()
+                if callable(m):
+                    self.page_element = m(self.page_element)
+                    continue
                 if m in manipulation_options:
                     manipulate = getattr(Manipulation, m)
                     self.page_element = manipulate(self.page_element)
