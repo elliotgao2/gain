@@ -3,27 +3,31 @@ import logging
 from typing import List
 
 # Becomes clean and accepts str, list, dict
-def clean(s:str) -> str or None:
+def clean(s:(str, list)) -> (str, list) or None:
     """
         s = string to clean
         Clean tabs, spaces, newlines and unwanted Unicode characters
         Returns cleaned string
     """
-    # Tuples can contain any method and argument length that you need to clean the string
-    default_actions = (
-        ('replace', '\n', ' '),
-        ('replace', '\t', ' '),
-        ('replace', '\r', ' '),
-        ('strip',)
-        )
-    if isinstance(s, str):
+    def _clean(s:str) -> str or None:
+        # Tuples can contain any method and argument length that you need to clean the string
+        default_actions = (
+            ('replace', '\n', ' '),
+            ('replace', '\t', ' '),
+            ('replace', '\r', ' '),
+            ('strip',)
+            )
         for method in default_actions:
             args = tuple(list(method)[1::])
             s = s.__getattribute__(list(method)[0])(*args)
         s = ' '.join(s.split())
         return s
-    return s
+    
+    if isinstance(s, str):
+        return _clean(s)
 
+    elif isinstance(s, list):
+        return [_clean(item) for item in s]
 
 def clean_numeric(s:str) -> str or s:
     """s = '3.55,-'; clean_numeric(s)
@@ -52,7 +56,7 @@ def str_num_only(s, protect_char='') -> str or s:
     else:
         return s
 
-#  Separate code
+# Separate code
 # Users should decide on this, not me
 def clean_phone_number(s:str) -> str:
     """s = "+ 32 16 23 69 36"
