@@ -3,7 +3,7 @@ import logging
 from typing import List
 
 # Becomes clean and accepts str, list, dict
-def clean_string(s:str) -> str or None:
+def clean(s:str) -> str or None:
     """
         s = string to clean
         Clean tabs, spaces, newlines and unwanted Unicode characters
@@ -126,8 +126,8 @@ def to_date_iso(datestring: str) -> str:
 
 class Manipulation:
     @staticmethod
-    def clean_string(s):
-        return clean_string(s)
+    def clean(s):
+        return clean(s)
 
     @staticmethod
     def str_num_only(s):

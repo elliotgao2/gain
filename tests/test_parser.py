@@ -163,7 +163,7 @@ def test_parse_css_text():
 
 def test_parse_css_text_content():
     class Test(Item):
-        item = Css('#breadcrumb span', **{"method":'text_content', "index":'3', "manipulate": ["clean_string"] })
+        item = Css('#breadcrumb span', **{"method":'text_content', "index":'3', "manipulate": ["clean"] })
 
     parser = Parser(html, Test)
     extract = parser.parse_item(html)
@@ -175,7 +175,7 @@ def test_parse_css_get():
     class Test(Item):
         attr = Css('.map_canvas', 'data-address')
         get = Css('.map_canvas', **{"method":'get', "attr":'data-address'})
-        gmap = Css('[data-address]', **{"manipulate": ["clean_string"]})
+        gmap = Css('[data-address]', **{"manipulate": ["clean"]})
 
     parser = Parser(html, Test)
     extract = parser.parse_item(html)

@@ -37,7 +37,7 @@ class Item(metaclass=ItemType):
         for name, selector in self.selectors.items():
             value = selector.parse_detail(unescape(html))
             if value is None:
-                logger.error('Selector "{}" for {} was wrong, please check again'.format(selector.rule, name))
+                logger.error('Selector "{}" for {} was wrong, please check again for this page {}'.format(selector.rule, name, url))
             else:
                 self.results[name] = value
         if hasattr(self, 'save_url'):

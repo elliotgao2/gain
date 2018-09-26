@@ -7,7 +7,7 @@ from pyquery import PyQuery as pq
 from .tool import Manipulation
 
 manipulation_options = [
-    "clean_string",
+    "clean",
     "extract_email",
     "extract_phone",
     "extract_website",
@@ -109,7 +109,7 @@ class Css(Selector):
             self._set_element(
                 lambda: list(
                             filter(None, 
-                                [Manipulation.clean_string(line) for line in self.css_select(self.rule)[index].itertext()]
+                                [Manipulation.clean(line) for line in self.css_select(self.rule)[index].itertext()]
                         )
                     )
                 )
@@ -135,7 +135,7 @@ class Css(Selector):
                         table_dict[item] = table[idx+1]
             """
             if isinstance(self.page_element, list) and (len(self.page_element) % 2) == 0:
-                clean = Manipulation.clean_string
+                clean = Manipulation.clean
                 self._set_element(
                     lambda: {
                         clean(self.page_element[idx-1]):clean(value) for idx, value in enumerate(self.page_element) if idx % 2
