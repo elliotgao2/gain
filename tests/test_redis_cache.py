@@ -3,6 +3,9 @@ import asyncio
 import pathlib
 import socket
 import ssl
+import sys
+# async yield not possible with python 3.5
+from async_generator import async_generator, yield_
 # from aiohttp.test_utils import unused_port
 import aiohttp
 from aiohttp import web
@@ -15,6 +18,7 @@ import hashlib
 from gain.request import fetch
 from utils.spider import FakeCacheSpider, cache
 from utils.resolver import FakeResolver
+
 
 html_raw = """
     <!DOCTYPE html>
@@ -106,23 +110,27 @@ class RedisCacheServer:
 
         return web.Response(body=html, headers=headers)
 
+
+@async_generator
 @pytest.fixture()
 async def info(loop):
     fake_redis_cache_server = RedisCacheServer(loop=loop)
     info = await fake_redis_cache_server.start()
-    yield info
+    await yield_(info)
     await fake_redis_cache_server.stop()
-
-
+    
+@async_generator
 @pytest.fixture()
 async def session(loop, info):
     resolver = FakeResolver(info, loop=loop)
     connector = aiohttp.TCPConnector(loop=loop, resolver=resolver, ssl=False)
     session = aiohttp.ClientSession(connector=connector, loop=loop)
-    yield session
+    await yield_(session)
     await session.close()
 
 
+@pytest.mark.skipif(sys.version_info < (3,6),
+                    reason="requires python3.6 and up")
 async def test_redis_cache_hits(session):
 
     url = None

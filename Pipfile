@@ -12,8 +12,11 @@ aiocache = {version = "*",extras = ["redis"]}
 python-dateutil = "*"
 pytest-aiohttp = "*"
 aiofiles = "*"
+gain = {path = "."}
+async-generator = "*"
+# pytest-asyncio = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.7"
+python_version = "3.5"
