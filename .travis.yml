@@ -1,7 +1,11 @@
+dist: xenial
+services:
+  - redis-server
 language: python
 python:
   - '3.5'
   - '3.6'
+  - '3.7'
 sudo: false
 install:
     - pip install ./
