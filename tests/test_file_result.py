@@ -11,9 +11,7 @@ def test_file_result():
     f = FileResult(url)
     test_str = "test_str"
 
-    policy = asyncio.get_event_loop_policy()
-    loop = policy.new_event_loop()
-    asyncio.set_event_loop(loop)
+    loop = asyncio.get_event_loop()
     loop.run_until_complete(f.save(test_str))
 
     with open(test_file, 'r+') as file_to_test:
