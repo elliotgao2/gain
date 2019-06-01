@@ -13,7 +13,7 @@ import random
 import hashlib
 
 from gain.request import fetch
-from utils.spider import FakeCacheSpider
+from utils.spider import FakeCacheSpider, cache
 from utils.resolver import FakeResolver
 
 html_raw = """

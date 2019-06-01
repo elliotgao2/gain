@@ -8,11 +8,10 @@ test = "pytest"
 
 [packages]
 pytest = "*"
-gain = {path = "."}
 aiocache = {version = "*",extras = ["redis"]}
-# pytest-asyncio = "*"
 python-dateutil = "*"
 pytest-aiohttp = "*"
+aiofiles = "*"
 
 [dev-packages]
 

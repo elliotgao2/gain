@@ -9,5 +9,5 @@ python:
 sudo: false
 install:
     - pip install ./
-    - pip install pytest-aiohttp
+    - pip install pytest-aiohttp aiocache[redis]
 script: pytest
