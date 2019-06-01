@@ -51,14 +51,14 @@ async def run():
     assert request_count[0] == 1
 
 
-def test_validate_cache():
-    """
-        Docker Redis and Webserver.py needs to be running.
-    """
-    loop = asyncio.get_event_loop()
-    future = asyncio.ensure_future(run())
-    loop.run_until_complete(future)
-    loop.close()
+# def test_validate_cache():
+#     """
+#         Docker Redis and Webserver.py needs to be running.
+#     """
+#     loop = asyncio.get_event_loop()
+#     future = asyncio.ensure_future(run())
+#     loop.run_until_complete(future)
+#     loop.close()
 
-if __name__ == "__main__":
-    test_validate_cache()
+# if __name__ == "__main__":
+#     test_validate_cache()

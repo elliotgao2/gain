@@ -1,0 +1,20 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[scripts]
+test = "pytest"
+
+[packages]
+pytest = "*"
+gain = {path = "."}
+aiocache = {version = "*",extras = ["redis"]}
+# pytest-asyncio = "*"
+python-dateutil = "*"
+pytest-aiohttp = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.7"

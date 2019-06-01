@@ -11,7 +11,8 @@ manipulation_options = [
     "extract_email",
     "extract_phone",
     "extract_website",
-    "to_date_iso"
+    "to_date_iso",
+    "str_num_only"
 ]
 
 class Selector:

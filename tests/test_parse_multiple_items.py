@@ -16,5 +16,5 @@ class MySpider(Spider):
 
 
 # asserts in this file have no affect on pytest on failure, needs review.
-# def test_spider():
-#     MySpider.run()
+def test_spider():
+    MySpider.run()
