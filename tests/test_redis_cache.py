@@ -44,12 +44,12 @@ count = """
 
 random.seed(1)
 
-    
+
 class RedisCacheServer:
 
     def __init__(self, *, loop):
         self.loop = loop
-        self.app = web.Application(loop=loop)
+        self.app = web.Application()
         
         self.app.router.add_routes(
             [web.get("/{name}", self.redis_cache_call),
@@ -67,7 +67,7 @@ class RedisCacheServer:
         # port = unused_port()
         port = 8080
         host = "localhost"
-        self.handler = self.app.make_handler()
+        self.handler = self.app._make_handler()
         self.server = await self.loop.create_server(self.handler,
                                                     '127.0.0.1', port,
                                                     ssl=self.ssl_context
@@ -129,19 +129,18 @@ async def test_redis_cache_hits(session):
     tasks = []
     semaphore = asyncio.Semaphore(1)
     random_hash = hashlib.md5(str(datetime.now().isoformat()).encode("UTF-8")).hexdigest()
+    spider = FakeCacheSpider()
 
     async with session:
         # Create cache
         for i in (random_hash,)*5:
             url = "https://localhost:8080/{}"
-            html = await fetch(url.format(i), FakeCacheSpider(), session, semaphore)
+            html = await fetch(url.format(i), spider, session, semaphore)
 
         # Check count of non cached hits
         url = "https://localhost:8080/calls"
-        _request_count = await fetch(url, FakeCacheSpider(), session, semaphore)
+        _request_count = await fetch(url, spider, session, semaphore)
 
     request_count = [int(s) for s in _request_count.split() if s.isdigit()]
 
     assert request_count[0] == 1
-
-    # assert False == True
