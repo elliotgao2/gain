@@ -9,4 +9,5 @@ python:
 sudo: false
 install:
     - pip install ./
+    - pip install pytest-aiohttp
 script: pytest
