@@ -18,7 +18,8 @@ setup(
         'aiohttp',
         'pyquery',
         'aiofiles',
-        'aiocache[redis]'
+        'aiocache[redis]',
+        'python-dateutil'
     ],
     license='GNU GPL 3',
     packages=find_packages(),
