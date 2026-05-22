@@ -10,10 +10,10 @@ class Selector:
         self.attr = attr
 
     def __str__(self):
-        return '{}({})'.format(self.__class__.__name__, self.rule)
+        return "{}({})".format(self.__class__.__name__, self.rule)
 
     def __repr__(self):
-        return '{}({})'.format(self.__class__.__name__, self.rule)
+        return "{}({})".format(self.__class__.__name__, self.rule)
 
     def parse_detail(self, html):
         raise NotImplementedError
@@ -39,8 +39,11 @@ class Xpath(Selector):
                     return [entry.text for entry in d.xpath(self.rule)]
                 else:
                     return d.xpath(self.rule)[0].text
-            return [entry.get(self.attr, None) for entry in d.xpath(self.rule)] if len(d.xpath(self.rule)) > 1 else \
-                d.xpath(self.rule)[0].text
+            return (
+                [entry.get(self.attr, None) for entry in d.xpath(self.rule)]
+                if len(d.xpath(self.rule)) > 1
+                else d.xpath(self.rule)[0].text
+            )
         except IndexError:
             return None
 

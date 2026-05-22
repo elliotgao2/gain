@@ -5,7 +5,8 @@ import re
 
 
 def _parse_rfc1738_args(url):
-    pattern = re.compile(r'''
+    pattern = re.compile(
+        r"""
         (?P<name>[\w\+]+)://
         (?:
             (?P<username>[^:/]*)
@@ -19,20 +20,21 @@ def _parse_rfc1738_args(url):
             (?::(?P<port>[^/]*))?
         )?
         (?:/(?P<database>.*))?
-        ''', re.X)
+        """,
+        re.X,
+    )
     m = pattern.match(url)
     if m is not None:
         components = m.groupdict()
-        ipv6 = components.pop('ipv6host')
-        ipv4 = components.pop('ipv4host')
-        components['host'] = ipv4 or ipv6
+        ipv6 = components.pop("ipv6host")
+        ipv4 = components.pop("ipv4host")
+        components["host"] = ipv4 or ipv6
         return components
     else:
-        raise ValueError('wrong url format')
+        raise ValueError("wrong url format")
 
 
 class BaseResult:
-
     def __init__(self, url):
         self.url = url
         self._parse_url()
@@ -40,15 +42,15 @@ class BaseResult:
 
     def _parse_url(self):
         configs = _parse_rfc1738_args(self.url)
-        self.schema = configs['name']
-        self.username = configs['username']
-        self.password = configs['password']
-        self.host = configs['host']
-        if configs['port']:
-            self.port = int(configs['port'])
+        self.schema = configs["name"]
+        self.username = configs["username"]
+        self.password = configs["password"]
+        self.host = configs["host"]
+        if configs["port"]:
+            self.port = int(configs["port"])
         else:
             self.port = None
-        self.database = configs['database']
+        self.database = configs["database"]
 
     def prepare(self):
         """

@@ -6,7 +6,6 @@ from .base import BaseResult
 
 
 class MySQLResult(BaseResult):
-
     def __init__(self, url):
         super().__init__(url)
 

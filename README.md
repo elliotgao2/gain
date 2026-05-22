@@ -1,93 +1,141 @@
-# <img width="200" height="200" src="img/logo.png"/>
+# gain
 
-[![Build](https://travis-ci.org/gaojiuli/gain.svg?branch=master)](https://travis-ci.org/gaojiuli/gain)
-[![Python](https://img.shields.io/pypi/pyversions/gain.svg)](https://pypi.python.org/pypi/gain/)
-[![Version](https://img.shields.io/pypi/v/gain.svg)](https://pypi.python.org/pypi/gain/)
-[![License](https://img.shields.io/pypi/l/gain.svg)](https://pypi.python.org/pypi/gain/)
+[![CI](https://github.com/elliotgao2/gain/actions/workflows/ci.yml/badge.svg)](https://github.com/elliotgao2/gain/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/gain.svg)](https://pypi.org/project/gain/)
+[![Python](https://img.shields.io/pypi/pyversions/gain.svg)](https://pypi.org/project/gain/)
+[![License](https://img.shields.io/pypi/l/gain.svg)](https://pypi.org/project/gain/)
 
-Web crawling framework for everyone. Written with `asyncio`, `uvloop` and `aiohttp`.
+> Async web crawling framework for everyone.
 
-![](img/architecture.png)
+Built on `asyncio`, `aiohttp`, and `lxml`/`pyquery`. Declare items and
+parsers; `gain` handles the concurrency, retries, and persistence.
 
-## Requirements
+## Install
 
-- Python3.5+
+```bash
+pip install gain
+```
 
-## Installation
+Linux users can opt into `uvloop` for an extra speed bump:
 
-`pip install gain`
+```bash
+pip install "gain[uvloop]"
+```
 
-`pip install uvloop` (Only linux)
+Requires Python 3.10+.
 
-## Usage
-
-1. Write spider.py:
+## Quickstart
 
 ```python
-from gain import Css, Item, Parser, Spider
 import aiofiles
+from gain import Css, Item, Parser, Spider
+
 
 class Post(Item):
-    title = Css('.entry-title')
-    content = Css('.entry-content')
+    title = Css(".entry-title")
+    content = Css(".entry-content")
 
     async def save(self):
-        async with aiofiles.open('scrapinghub.txt', 'a+') as f:
-            await f.write(self.results['title'])
+        async with aiofiles.open("scrapinghub.txt", "a+") as f:
+            await f.write(self.results["title"] + "\n")
 
 
 class MySpider(Spider):
     concurrency = 5
-    headers = {'User-Agent': 'Google Spider'}
-    start_url = 'https://blog.scrapinghub.com/'
-    parsers = [Parser('https://blog.scrapinghub.com/page/\d+/'),
-               Parser('https://blog.scrapinghub.com/\d{4}/\d{2}/\d{2}/[a-z0-9\-]+/', Post)]
+    headers = {"User-Agent": "Google Spider"}
+    start_url = "https://blog.scrapinghub.com/"
+    parsers = [
+        Parser(r"https://blog.scrapinghub.com/page/\d+/"),
+        Parser(r"https://blog.scrapinghub.com/\d{4}/\d{2}/\d{2}/[a-z0-9\-]+/", Post),
+    ]
 
 
 MySpider.run()
 ```
 
-Or use XPathParser:
+Run it:
+
+```bash
+python spider.py
+```
+
+### XPath parsers
 
 ```python
-from gain import Css, Item, Parser, XPathParser, Spider
+from gain import Css, Item, Parser, Spider, XPathParser
 
 
 class Post(Item):
-    title = Css('.breadcrumb_last')
+    title = Css(".breadcrumb_last")
 
     async def save(self):
         print(self.title)
 
 
 class MySpider(Spider):
-    start_url = 'https://mydramatime.com/europe-and-us-drama/'
+    start_url = "https://mydramatime.com/europe-and-us-drama/"
     concurrency = 5
-    headers = {'User-Agent': 'Google Spider'}
+    headers = {"User-Agent": "Google Spider"}
     parsers = [
-               XPathParser('//span[@class="category-name"]/a/@href'),
-               XPathParser('//div[contains(@class, "pagination")]/ul/li/a[contains(@href, "page")]/@href'),
-               XPathParser('//div[@class="mini-left"]//div[contains(@class, "mini-title")]/a/@href', Post)
-              ]
-    proxy = 'https://localhost:1234'
+        XPathParser('//span[@class="category-name"]/a/@href'),
+        XPathParser('//div[contains(@class, "pagination")]/ul/li/a[contains(@href, "page")]/@href'),
+        XPathParser('//div[@class="mini-left"]//div[contains(@class, "mini-title")]/a/@href', Post),
+    ]
+    proxy = "https://localhost:1234"
+
 
 MySpider.run()
+```
+
+## How it works
 
 ```
-You can add proxy setting to spider as above. 
+   ┌────────────┐    ┌────────────┐    ┌────────────┐    ┌────────────┐
+   │  start_url │ ─▶ │  Parser    │ ─▶ │  Item      │ ─▶ │ save()     │
+   │            │    │  (follow)  │    │  (extract) │    │  (persist) │
+   └────────────┘    └────────────┘    └────────────┘    └────────────┘
+                          ▲                                      │
+                          └──────────── new urls ────────────────┘
+```
 
+1. **Spider** kicks off from `start_url` under a concurrency budget.
+2. **Parsers** either *follow* (one argument) — discovering more URLs to
+   queue — or *extract* (two arguments) — instantiating an `Item` from each
+   matching page.
+3. **Items** use `Css` / `Xpath` / `Regex` selectors to pull fields out of
+   HTML.
+4. **`save()`** is your async hook to persist results — write a file, push
+   to a queue, insert into a database.
 
-2. Run `python spider.py`
+## Examples
 
-3. Result:
+See the [`example/`](example) directory for runnable scripts against
+Scrapinghub, V2EX, and Sciencenet.
 
-![](img/sample.png)
+## Development
 
-## Example
+```bash
+git clone https://github.com/elliotgao2/gain.git
+cd gain
+uv sync                 # install deps into .venv
+uv run pytest           # run tests
+uv run ruff check .     # lint
+```
 
-The examples are in the `/example/` directory.
+We use [uv](https://github.com/astral-sh/uv) for packaging and
+[ruff](https://github.com/astral-sh/ruff) for lint + format. Install the
+pre-commit hooks:
 
-## Contribution
+```bash
+uv run pre-commit install
+```
 
-- Pull request.
-- Open issue.
+## Contributing
+
+Pull requests are welcome. For non-trivial changes, please open an issue
+first to discuss. Make sure `pytest` and `ruff check` pass before
+submitting.
+
+## License
+
+[MIT](LICENSE) © Elliot Gao

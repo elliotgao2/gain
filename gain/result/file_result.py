@@ -8,11 +8,10 @@ from .base import BaseResult
 
 
 class FileResult(BaseResult):
-
     def __init__(self, url, **kwargs):
         super().__init__(url)
-        if self.schema != 'file':
-            raise ValueError('scheme error')
+        if self.schema != "file":
+            raise ValueError("scheme error")
         self.path = self.database
 
     def prepare(self):
@@ -35,5 +34,5 @@ class FileResult(BaseResult):
         :param results: str
         :return: None
         """
-        async with aiofiles.open(self.path, 'a+') as f:
+        async with aiofiles.open(self.path, "a+") as f:
             await f.write(results)

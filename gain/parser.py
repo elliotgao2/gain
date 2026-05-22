@@ -1,6 +1,6 @@
 import asyncio
-from asyncio import Queue
 import re
+from asyncio import Queue
 from html import unescape
 from urllib.parse import urljoin
 
@@ -8,10 +8,11 @@ import aiohttp
 from lxml import etree
 
 from gain.request import fetch
+
 from .log import logger
 
 
-class BaseParser(object):    
+class BaseParser(object):
     def __init__(self, rule, item=None):
         self.rule = rule
         self.item = item
@@ -25,15 +26,15 @@ class BaseParser(object):
             return
         for url in self.abstract_urls(html):
             url = unescape(url)
-            if not re.match('(http|https)://', url):
+            if not re.match("(http|https)://", url):
                 url = urljoin(base_url, url)
             self.add(url)
-    
+
     def abstract_urls(self, html):
         raise NotImplementedError
 
     def add(self, urls):
-        url = '{}'.format(urls)
+        url = "{}".format(urls)
         if url not in self.filter_urls:
             self.filter_urls.add(url)
             self.pre_parse_urls.put_nowait(url)
@@ -60,10 +61,12 @@ class BaseParser(object):
             item = self.parse_item(html)
             await item.save()
             self.item.count_add()
-            logger.info('Parsed({}/{}): {}'.format(len(self.done_urls), len(self.filter_urls), url))
+            logger.info("Parsed({}/{}): {}".format(len(self.done_urls), len(self.filter_urls), url))
         else:
             spider.parse(html)
-            logger.info('Followed({}/{}): {}'.format(len(self.done_urls), len(self.filter_urls), url))
+            logger.info(
+                "Followed({}/{}): {}".format(len(self.done_urls), len(self.filter_urls), url)
+            )
 
     async def task(self, spider, semaphore):
         async with aiohttp.ClientSession(cookie_jar=spider.cookie_jar) as session:

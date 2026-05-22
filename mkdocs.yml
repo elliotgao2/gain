@@ -1,0 +1,53 @@
+site_name: gain
+site_description: Async web crawling framework for everyone.
+site_author: Elliot Gao
+site_url: https://elliotgao2.github.io/gain/
+
+repo_url: https://github.com/elliotgao2/gain
+repo_name: elliotgao2/gain
+
+nav:
+  - Home: index.md
+  - Tutorial: tutorial.md
+  - Topics:
+      - Spider: spider.md
+      - Parser: parser.md
+      - Item: item.md
+      - Selectors: selector.md
+      - Result: result.md
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - content.code.copy
+
+markdown_extensions:
+  - admonition
+  - def_list
+  - toc:
+      permalink: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+
+plugins:
+  - search
+
+copyright: Copyright &copy; 2017-2026 Elliot Gao

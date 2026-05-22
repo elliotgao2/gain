@@ -1,21 +1,28 @@
 import os
-import sys
-sys.path.append('..')
+
+import pytest
+
 from gain.result import FileResult
-import asyncio
 
 
-def test_file_result():
-    test_file = "spider.data"
-    url = "file:///{}".format(test_file)
-    f = FileResult(url)
-    test_str = "test_str"
-    policy = asyncio.get_event_loop_policy()
-    loop = policy.new_event_loop()
-    # loop = asyncio.get_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(f.save(test_str))
-    with open(test_file, 'r+') as test_file:
-        assert test_file.read() == test_str + "\n"
-    if os.path.exists(url):
-        os.remove(url)
+@pytest.mark.asyncio
+async def test_file_result_saves_string_to_disk(tmp_path):
+    target = tmp_path / "spider.data"
+    result = FileResult(f"file:///{target}")
+
+    await result.save("test_str")
+
+    assert target.read_text() == "test_str\n"
+
+
+@pytest.mark.asyncio
+async def test_file_result_rejects_non_file_scheme():
+    with pytest.raises(ValueError):
+        FileResult("http://example.com/foo")
+
+
+def test_file_result_cleans_up_legacy_artifact():
+    legacy = "spider.data"
+    if os.path.exists(legacy):
+        os.remove(legacy)
+    assert not os.path.exists(legacy)
