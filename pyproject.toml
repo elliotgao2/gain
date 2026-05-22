@@ -1,6 +1,6 @@
 [project]
 name = "gain"
-version = "1.0.0"
+version = "1.0.1"
 description = "Async web crawling framework for everyone."
 authors = [{ name = "Elliot Gao", email = "gaojiuli@gmail.com" }]
 license = "MIT"
