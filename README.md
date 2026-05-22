@@ -1,9 +1,12 @@
 # gain
 
-[![CI](https://github.com/elliotgao2/gain/actions/workflows/ci.yml/badge.svg)](https://github.com/elliotgao2/gain/actions/workflows/ci.yml)
-[![PyPI](https://img.shields.io/pypi/v/gain.svg)](https://pypi.org/project/gain/)
-[![Python](https://img.shields.io/pypi/pyversions/gain.svg)](https://pypi.org/project/gain/)
-[![License](https://img.shields.io/pypi/l/gain.svg)](https://pypi.org/project/gain/)
+[![CI](https://img.shields.io/github/actions/workflow/status/elliotgao2/gain/ci.yml?branch=master&style=for-the-badge&logo=githubactions&logoColor=white&label=CI)](https://github.com/elliotgao2/gain/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/gain?style=for-the-badge&logo=pypi&logoColor=white&label=PyPI&color=3775A9)](https://pypi.org/project/gain/)
+[![Python](https://img.shields.io/pypi/pyversions/gain?style=for-the-badge&logo=python&logoColor=white&color=3776AB)](https://pypi.org/project/gain/)
+[![License](https://img.shields.io/pypi/l/gain?style=for-the-badge&color=A31F34)](https://pypi.org/project/gain/)
+[![Downloads](https://img.shields.io/pypi/dm/gain?style=for-the-badge&logo=pypi&logoColor=white&label=Downloads&color=5C7CFA)](https://pypi.org/project/gain/)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json&style=for-the-badge)](https://github.com/astral-sh/ruff)
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json&style=for-the-badge)](https://github.com/astral-sh/uv)
 
 > Async web crawling framework for everyone.
 
